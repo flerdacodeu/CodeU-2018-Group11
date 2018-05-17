@@ -1,6 +1,6 @@
 # Assignment 0
 
-Please submit assignment 0 to this directory.
+Please submit assignment 0 (test) to this directory.
 
 Remember to create a branch named `imorlowska-0` 
 instead of submitting to the `master` branch.
