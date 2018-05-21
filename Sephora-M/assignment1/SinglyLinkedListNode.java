@@ -7,12 +7,17 @@
  * @author Sephora-M
  *
  */
-public class SinglyLinkedListNode {
-	private Object data;
-	private SinglyLinkedListNode next = null;
+public class SinglyLinkedListNode<T> {
+	private T data;
+	private SinglyLinkedListNode<T> next = null;
 	
-	public SinglyLinkedListNode(Object data) {
+	public SinglyLinkedListNode(T data) {
 		this.data = data;
+	}
+	
+	public SinglyLinkedListNode(T data, SinglyLinkedListNode<T> next) {
+		this.data = data;
+		this.next = next;
 	}
 	
 	/**
@@ -22,9 +27,9 @@ public class SinglyLinkedListNode {
 	 * @param k integer, the index 
 	 * @return the kth element starting from the end will be return
 	 */
-	public SinglyLinkedListNode kToLast(int k) {
-		SinglyLinkedListNode pointer = this;
-		SinglyLinkedListNode runner = this;
+	public SinglyLinkedListNode<T> kToLast(int k) {
+		SinglyLinkedListNode<T> pointer = this;
+		SinglyLinkedListNode<T> runner = this;
 		int counter = 0;
 		
 		while (pointer.getNext() != null) {
@@ -48,7 +53,7 @@ public class SinglyLinkedListNode {
 	}
 	
 	public void print() {
-		SinglyLinkedListNode current = this;
+		SinglyLinkedListNode<T> current = this;
 		do {
 			System.out.print(current.toString());
 			System.out.print(" -> ");
@@ -61,15 +66,15 @@ public class SinglyLinkedListNode {
 		return data;
 	}
 	
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 	
-	public SinglyLinkedListNode getNext() {
+	public SinglyLinkedListNode<T> getNext() {
 		return next;
 	}
 
-	public void setNext(SinglyLinkedListNode next) {
+	public void setNext(SinglyLinkedListNode<T> next) {
 		this.next = next;
 	}
 }
