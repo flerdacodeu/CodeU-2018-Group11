@@ -11,10 +11,10 @@ public class Anagrams {
 	
 	/**
 	 * Checks whether or not two strings are anagrams of each other
-	 * @param str1 the first string
-	 * @param str2 the second string 
-	 * @param caseSensitive boolean, if true, check for case sensitive anagrams, otherwise cheks for
-	 * case insensitive anagrams
+	 * @param str1 String object, a sentence (can be a single word too)
+	 * @param str2 String object, another sentence (or single word) to be checked against str1
+	 * @param caseSensitive boolean, if true, check if str1 and str2 are case sensitive anagram of each other,
+	 * otherwise chek if they are case insensitive anagrams
 	 * @return true if str1 and str2 are anagrams, false otherwise
 	 */
 	public static boolean checkAnagrams(String str1, String str2, boolean caseSensitive) {
