@@ -62,7 +62,7 @@ public class SinglyLinkedListNode<T> {
 		System.out.print("Nil");
 	}
 	
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
 	
