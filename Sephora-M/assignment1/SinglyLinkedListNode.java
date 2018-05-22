@@ -1,6 +1,6 @@
 /***
  * This class implements a simple singly linked list data structure where
- * each node stores an object and points to the next node in the list or
+ * each node stores data of generic type and points to the next node in the list or
  * to null if it is the last node in the list.
  * 
  * The method kToLast returns the kth to last element of the singly linked list 
@@ -23,9 +23,9 @@ public class SinglyLinkedListNode<T> {
 	/**
 	 * Find and return the kth to last element of the singly linked 
 	 * list if it exists.
-	 * Throws and exception if the index is out of bounds
+	 * Throws an exception if the index is out of bounds
 	 * @param k integer, the index 
-	 * @return the kth element starting from the end will be return
+	 * @return the kth element from the end
 	 */
 	public SinglyLinkedListNode<T> kToLast(int k) {
 		SinglyLinkedListNode<T> pointer = this;
