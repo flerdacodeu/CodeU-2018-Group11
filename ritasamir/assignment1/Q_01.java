@@ -4,6 +4,13 @@ import java.util.Arrays;
 
 public class Q_01 {
 
+	/**
+	 * checkAnagram is a method that takes two sentences and checks if they are
+	 * anagram or not 
+	 * @param firstStr is the first sentence
+	 * @param secondStr is the second sentence
+	 * @return true if they are anagram, false otherwise.
+	 */
 	public boolean checkAnagram(String firstStr, String secondStr) {
 		String[] array1 = firstStr.split(" ");
 		String[] array2 = secondStr.split(" ");
