@@ -4,51 +4,22 @@ import java.util.Iterator;
 
 public class Q1 {
 
-    /*The function checks whether two strings are anagram. It is case insensitive and it discards all
-    * characters other than letters. The logic behind it is calculating character's ascii values and
+    /*The function checks whether two strings are anagram. It discards all characters other
+    * than letters. the user can decide if the function is case sensitive or not using the parameter "isSensitive".
+    * The logic behind it is calculating character's ascii values and
     * using them as an index of arrays. It stores the frequency of letters of original string and compares
     * it with resulting string.*/
 
-    public static boolean isAnagram(String original, String resulting){
-        int original_len = original.length();
-        int resulting_len = resulting.length();
-        if(original_len!=resulting_len)
-            return false;
+    private static boolean isAnagram(String original, String resulting, boolean isSensitive){
 
-        int[] original_chararray = new int[26];
+        original = original.replaceAll("[^A-Za-z]+", "");
+        resulting = resulting.replaceAll("[^A-Za-z]+", "");
 
-        original = original.toUpperCase();
-        resulting = resulting.toUpperCase();
-
-        for(int i=0;i<original_len;i++){
-            char c = original.charAt(i);
-            int ascii = (int) c;
-            if(ascii>=65 && ascii<=90){
-                int index = (int)c - 65;
-                original_chararray[index] +=1;
-            }
+        if(!isSensitive){
+            original = original.toUpperCase();
+            resulting = resulting.toUpperCase();
         }
 
-        for(int t=0;t<resulting_len;t++){
-            char c = resulting.charAt(t);
-            int ascii = (int) c;
-            if(ascii>=65 && ascii<=90) {
-                int index = (int) c - 65;
-                if (original_chararray[index] == 0)
-                    return false;
-                original_chararray[index] -= 1;
-            }
-        }
-
-        return true;
-    }
-
-    /*The function checks whether two strings are anagram. It is case sensitive and it discards all
-     * characters other than letters. The logic behind it is calculating character's ascii values and
-     * using them as an index of arrays. It stores the frequency of letters of original string and compares
-     * it with resulting string.*/
-
-    public static boolean isAnagram_caseSensitive(String original, String resulting){
         int original_len = original.length();
         int resulting_len = resulting.length();
         if(original_len!=resulting_len)
@@ -59,32 +30,29 @@ public class Q1 {
 
         for(int i=0;i<original_len;i++){
             char c = original.charAt(i);
-            int ascii = (int)c;
             int index;
-            if(ascii>=65 && ascii<=90){
-                index = (int)c - 65;
+            if(c>='A' && c<='Z'){
+                index = (int)c - 'A';
                 original_chararray_upper[index] +=1;
             }
-            else if(ascii>=97 && ascii <=122){
-                index = (int)c - 97;
+            if(c>='a' && c<='z'){
+                index = (int)c - 'a';
                 original_chararray_lower[index] +=1;
             }
-
         }
 
         for(int t=0;t<resulting_len;t++){
             char c = resulting.charAt(t);
-            int ascii = (int)c;
             int index;
-            if(ascii>=65 && ascii<=90){
-                index = (int)c - 65;
+            if(c>='A' && c<='Z'){
+                index = (int)c - 'A';
                 if(original_chararray_upper[index]==0)
                     return false;
                 original_chararray_upper[index] -=1;
             }
 
-            else if(ascii>=97 && ascii <=122){
-                index = (int)c - 97;
+            if(c>='a' && c<='z'){
+                index = (int)c - 'a';
                 if(original_chararray_lower[index]==0)
                     return false;
                 original_chararray_lower[index] -=1;
@@ -94,12 +62,13 @@ public class Q1 {
         return true;
     }
 
+
     /*The function checks whether two strings are anagram. It works with all ascii characters
     and the user can decide if the function is case sensitive or not using the parameter "isSensitive".
     The function uses HashMap as a frequency table. It stores the frequency of letters of
     original string and compares it with resulting string.*/
 
-    public static boolean isAnagram_fullAscii(String original, String resulting, boolean isSensitive){
+    private static boolean isAnagram_fullAscii(String original, String resulting, boolean isSensitive){
         int original_len = original.length();
         int resulting_len = resulting.length();
         if(original_len!=resulting_len)
@@ -140,7 +109,7 @@ public class Q1 {
     * with resulting sentence. The function calls "isAnagram_fullAscii" function. The user can decide
     * whether the function is case sensitive or not. The function works for every ascii character.*/
 
-    public static boolean isAnagram_sentences(String original, String resulting, boolean isSensitive){
+    private static boolean isAnagram_sentences(String original, String resulting, boolean isSensitive){
         String[] original_words = original.split(" ");
         String[] resulting_words = resulting.split(" ");
         if(original_words.length!=resulting_words.length)
@@ -184,19 +153,28 @@ public class Q1 {
 
         String sentence1= "Hello, world!";
         String sentence2 = "ord!lw o,llhe";
-        /*System.out.println(isAnagram(or,res));
-        System.out.println(isAnagram(or,other));
-        System.out.println(isAnagram(or,other2));
 
-        System.out.println(isAnagram_caseSensitive(or,res));
-        System.out.println(isAnagram_caseSensitive(or,other));
-        System.out.println(isAnagram_caseSensitive(or,other2));
+        System.out.println("According to isAnagram function(Case Insensitive): ");
+        System.out.println("Are \"" + or + "\" and \"" + res + "\" anagram?: " +isAnagram(or,res, false));
+        System.out.println("Are \"" + or + "\" and \"" + other + "\" anagram?: " +isAnagram(or,other, false));
+        System.out.println("Are \"" + or + "\" and \"" + other2 + "\" anagram?: " +isAnagram(or,other2, false));
+        System.out.println("Are \"" + or + "\" and \"" + "integral****" + "\" anagram?: " +isAnagram(or,"integral****",false));
 
-        System.out.println(isAnagram_fullAscii(or,res, true));
-        System.out.println(isAnagram_fullAscii(or,other,true));
-        System.out.println(isAnagram_fullAscii(or,other2,true));*/
 
-        System.out.println(isAnagram_sentences(sentence1, sentence2, false));
-        System.out.println(isAnagram_sentences(sentence1, sentence2, true));
+        System.out.println("\nAccording to isAnagram function(Case Sensitive): ");
+        System.out.println("Are \"" + or + "\" and \"" + res + "\" anagram?: " +isAnagram(or,res,true));
+        System.out.println("Are \"" + or + "\" and \"" + other + "\" anagram?: " +isAnagram(or,other,true));
+        System.out.println("Are \"" + or + "\" and \"" + other2 + "\" anagram?: " +isAnagram(or,other2,true));
+        System.out.println("Are \"" + or + "\" and \"" + "integral****" + "\" anagram?: " +isAnagram(or,"integral****",true));
+
+        System.out.println("\nAccording to isAnagram_fullAscii function: ");
+        System.out.println("Are \"" + or + "\" and \"" + res + "\" anagram?: " +isAnagram_fullAscii(or,res, true));
+        System.out.println("Are \"" + or + "\" and \"" + other + "\" anagram?: " +isAnagram_fullAscii(or,other,true));
+        System.out.println("Are \"" + or + "\" and \"" + other2 + "\" anagram?: " +isAnagram_fullAscii(or,other2,true));
+
+        System.out.println("\nAccording to isAnagram_sentences function: ");
+
+        System.out.println("Are \"" + sentence1 + "\" and \"" + sentence2 + "\" anagram?(case insensitive): " +isAnagram_sentences(sentence1, sentence2, false));
+        System.out.println("Are \"" + sentence1 + "\" and \"" + sentence2 + "\" anagram?(case sensitive): " +isAnagram_sentences(sentence1, sentence2, true));
     }
 }
