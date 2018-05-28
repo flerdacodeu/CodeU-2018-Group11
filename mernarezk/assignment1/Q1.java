@@ -5,17 +5,6 @@ import java.util.Scanner;
 
 public class Q1 {
 	/**
-	 * Main Method for testing purposes.
-	 */
-	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
-
-		String s = in.nextLine();
-		String t = in.nextLine();
-		System.out.println(isAnagram(s, t));
-
-	}
-	/**
 	 * Method that checks if two strings are anagrams of the others,
 	 * Cases are ignored ( Cat is anagram of cat ) also any other non english
 	 * letter is ignored.
