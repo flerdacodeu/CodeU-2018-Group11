@@ -3,7 +3,9 @@ package assignment2;
 /**
  * This class implements a Binary Tree. Each node in the tree is an object BinaryTreeNode<T> that is represented by a key 
  * of generic type T and points to its children and to its parent. It is assumed that no two nodes have the same key. 
- * 
+ * WARNING: When using the add method of this class it will ensure that the new key does not already exist in the tree, however,
+ * changing existing node in the tree will not gurantee the unique key property (i.e. calling addChild, setChild, setParent or 
+ * setKey on a BinaryTreeNode never checks for the validity of the new key within the BinaryTree).
  */
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -30,7 +32,7 @@ public class BinaryTree<T> {
 			throw new NoSuchElementException("No element with key "+ key + " found in the tree");
 		
 		if(node.getParent() == null) {
-			System.out.println("A root node node has no ancestors!");
+			System.out.println("A root node has no ancestors!");
 			return;
 		}
 	
