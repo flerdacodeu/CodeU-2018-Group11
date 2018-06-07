@@ -13,9 +13,8 @@ class BinaryTreeTest {
     public ExpectedException thrown = ExpectedException.none();
 	
 	@Test
-	void testContainsNode() {
-		BinaryTreeNode<String> a = new BinaryTreeNode<String>("a", null);
-		BinaryTree<String> A = new BinaryTree<String>(a);
+	void testFindNode() {
+		BinaryTree<String> A = new BinaryTree<String>("a");
 		
 		A.add("b");
 		A.add("c");
@@ -34,21 +33,21 @@ class BinaryTreeTest {
 	
 	@Test
 	void testAddChild() {
-		BinaryTreeNode<String> a = new BinaryTreeNode<String>("a", null);
-		a.addChild("b");
-		a.addChild("c");
+		BinaryTree<String> A = new BinaryTree<String>("a");
+		A.addChild("a","b");
+		A.addChild("a","c");
 		
+		BinaryTreeNode<String> a = A.find("a");
 		BinaryTreeNode<String> b = a.findNode("b");
 		
 		assertTrue(b.getParent() == a);
 	}
 	
 	@Test
-	void testFindNode(){
-		BinaryTreeNode<String> a = new BinaryTreeNode<String>("a", null);
-		a.addChild("b");
-		a.addChild("c");
-		BinaryTree<String> A = new BinaryTree<String>(a);
+	void testPrintAcestors(){
+		BinaryTree<String> A = new BinaryTree<String>("a");
+		A.add("b");
+		A.add("c");
 	
 		try {
 			A.printAncestors("d");
@@ -60,45 +59,50 @@ class BinaryTreeTest {
 	
 	@Test
 	void testCommonAncestor() {
-		BinaryTreeNode<String> a = new BinaryTreeNode<String>("a", null);
-		BinaryTreeNode<String> b = new BinaryTreeNode<String>("b", null);
-		BinaryTreeNode<String> c = new BinaryTreeNode<String>("c", null);
-		BinaryTreeNode<String> d = new BinaryTreeNode<String>("d", null);
-		BinaryTreeNode<String> e = new BinaryTreeNode<String>("e", null);
-		BinaryTreeNode<String> f = new BinaryTreeNode<String>("f", null);
-		BinaryTreeNode<String> g = new BinaryTreeNode<String>("g", null);
-		BinaryTreeNode<String> h = new BinaryTreeNode<String>("h", null);
-		BinaryTreeNode<String> i = new BinaryTreeNode<String>("i", null);
-		BinaryTreeNode<String> j = new BinaryTreeNode<String>("j", null);
-		BinaryTreeNode<String> k = new BinaryTreeNode<String>("k", null);
-		BinaryTreeNode<String> l = new BinaryTreeNode<String>("l", null);
-		BinaryTreeNode<String> m = new BinaryTreeNode<String>("m", null);
-		BinaryTreeNode<String> n = new BinaryTreeNode<String>("n", null);
+		BinaryTree<String> tree = new BinaryTree<String>("a");
+
 		
-		a.addChild(b);
-		a.addChild(c);
-		b.addChild(f);
-		b.addChild(k);
-		c.addChild(d);
-		c.addChild(h);
-		d.addChild(e);
-		d.addChild(g);
-		h.addChild(l);
-		e.addChild(i);
-		e.addChild(n);
-		g.addChild(m);
-		i.addChild(j);
+		tree.addChild("a","b");
+		tree.addChild("a","c");
+		tree.addChild("b","f");
+		tree.addChild("b","k");
+		tree.addChild("c","d");
+		tree.addChild("c","h");
+		tree.addChild("d","e");
+		tree.addChild("d","g");
+		tree.addChild("h","l");
+		tree.addChild("e","i");
+		tree.addChild("e","n");
+		tree.addChild("g","m");
+		tree.addChild("i","j");
 		
-		BinaryTree<String> A = new BinaryTree<String>(a);
-		assertEquals(A.commonAncestor("b", "i").getKey(), "a");
-		assertEquals(A.commonAncestor("e", "d").getKey(), "d");
-		assertEquals(A.commonAncestor("d", "m").getKey(), "d");
-		assertEquals(A.commonAncestor("a", "n").getKey(), "a");
-		assertEquals(A.commonAncestor("n", "g").getKey(), "d");
-		assertEquals(A.commonAncestor("n", "l").getKey(), "c");
-		assertEquals(A.commonAncestor("m", "k").getKey(), "a");
-		assertEquals(A.commonAncestor("i", "j").getKey(), "i");
-		assertEquals(A.commonAncestor("j", "n").getKey(), "e");
+
+		assertEquals(tree.commonAncestor("b", "i").getKey(), "a");
+		assertEquals(tree.commonAncestor("e", "d").getKey(), "d");
+		assertEquals(tree.commonAncestor("d", "m").getKey(), "d");
+		assertEquals(tree.commonAncestor("a", "n").getKey(), "a");
+		assertEquals(tree.commonAncestor("n", "g").getKey(), "d");
+		assertEquals(tree.commonAncestor("n", "l").getKey(), "c");
+		assertEquals(tree.commonAncestor("m", "k").getKey(), "a");
+		assertEquals(tree.commonAncestor("i", "j").getKey(), "i");
+		assertEquals(tree.commonAncestor("j", "n").getKey(), "e");
+	}
+	
+	@Test
+	void testInOrderTreeConstruction() {
+		String[] inOrder = {"a","(","b","(","d","(","h",")","(","i",")",")","(","e","(","j",")",")",")",
+				"(","c","(","f","(","k",")",")","(","g",")",")"};
+		BinaryTree<String> tree = new BinaryTree<String>(inOrder, "(",")");
+		
+		assertEquals(tree.commonAncestor("b", "k").getKey(), "a");
+		assertEquals(tree.commonAncestor("e", "d").getKey(), "b");
+		assertEquals(tree.commonAncestor("i", "j").getKey(), "b");
+		assertEquals(tree.commonAncestor("h", "k").getKey(), "a");
+		assertEquals(tree.commonAncestor("k", "f").getKey(), "f");
+		assertEquals(tree.commonAncestor("j", "f").getKey(), "a");
+		assertEquals(tree.commonAncestor("j", "j").getKey(), "j");
+		assertEquals(tree.commonAncestor("h", "b").getKey(), "b");
+		assertEquals(tree.commonAncestor("g", "h").getKey(), "a");
 	}
 
 }
