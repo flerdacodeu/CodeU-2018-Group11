@@ -89,10 +89,10 @@ class BinaryTreeTest {
 	}
 	
 	@Test
-	void testInOrderTreeConstruction() {
-		String[] inOrder = {"a","(","b","(","d","(","h",")","(","i",")",")","(","e","(","j",")",")",")",
+	void testPreOrderTreeConstruction() {
+		String[] preOrder = {"a","(","b","(","d","(","h",")","(","i",")",")","(","e","(","j",")",")",")",
 				"(","c","(","f","(","k",")",")","(","g",")",")"};
-		BinaryTree<String> tree = new BinaryTree<String>(inOrder, "(",")");
+		BinaryTree<String> tree = new BinaryTree<String>(preOrder, "(",")");
 		
 		assertEquals(tree.commonAncestor("b", "k").getKey(), "a");
 		assertEquals(tree.commonAncestor("e", "d").getKey(), "b");
