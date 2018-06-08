@@ -30,26 +30,27 @@ public class BinaryTree<T> {
 	}
 	
 	/**
-	 * This constructor initialises a tree with from a list of node keys given in-order.
+	 * This constructor initialises a tree with from a list of node keys given pre-
+	 .
 	 * It uses user defined delimiters to specify the tree hierarchy. For examples, if the 
 	 * delimiters are "(" and ")", the simple tree having "a" as a root and "b" and "c" as children
 	 * is described by the list ["a", "(", "(","b", ")", "(", "c", ")",")"]   
-	 * @param inOrderKeys	T[], the in-order list of node keys
+	 * @param preOrderKeys	T[], the pre-order list of node keys
 	 * @param openDelimiter the open delimiter, a type T object
 	 * @param closeDelimiter the close delimiter, a type T object
 	 */
-	public BinaryTree(T[] inOrderKeys, T openDelimiter, T closeDelimiter) {
+	public BinaryTree(T[] preOrderKeys, T openDelimiter, T closeDelimiter) {
 		this.openDelimiter = openDelimiter;
 		this.closeDelimiter = closeDelimiter;
 		
-		if (inOrderKeys.length == 0){
+		if (preOrderKeys.length == 0){
 			root = null;
 		}
 		
 		else {
-			T rootKey = inOrderKeys[0];
+			T rootKey = preOrderKeys[0];
 			if (isOpenDelimiter(rootKey) || isCloseDelimiter(rootKey)) {
-				throw new IllegalArgumentException("The first element in the in order list should be the root key, not a delimiter");
+				throw new IllegalArgumentException("The first element in the pre-order list should be the root key, not a delimiter");
 			}
 		
 			// add the root to the tree
@@ -58,25 +59,25 @@ public class BinaryTree<T> {
 			keys.add(rootKey);
 			
 			// add the remaining nodes
-			if (!addFromInOrderList(inOrderKeys))
-				throw new IllegalArgumentException("Invalid in order list!");
+			if (!addFromPreOrderList(preOrderKeys))
+				throw new IllegalArgumentException("Invalid re-order list!");
 		}
 	}
 	
-	private boolean addFromInOrderList(T[] inOrderKeys) {
+	private boolean addFromPreOrderList(T[] preOrderKeys) {
 		Stack<BinaryTreeNode<T>> stack = new Stack<BinaryTreeNode<T>>();
 		stack.push(root);
 		
-		for (int i = 1; i < inOrderKeys.length; i++) {
+		for (int i = 1; i < preOrderKeys.length; i++) {
 			BinaryTreeNode<T> current = stack.peek();
-			if (inOrderKeys[i].equals(openDelimiter)) {
-				if (inOrderKeys.length == i + 1)
-					throw new IllegalArgumentException("Invalid in order list!");
-				addChild(current, inOrderKeys[i+1]);
-				stack.push(find(inOrderKeys[i+1]));
+			if (preOrderKeys[i].equals(openDelimiter)) {
+				if (preOrderKeys.length == i + 1)
+					throw new IllegalArgumentException("Invalid pre-order list!");
+				addChild(current, preOrderKeys[i+1]);
+				stack.push(find(preOrderKeys[i+1]));
 				i++;
 			}
-			else if (inOrderKeys[i].equals(closeDelimiter)) {
+			else if (preOrderKeys[i].equals(closeDelimiter)) {
 				stack.pop();
 			}
 		}
