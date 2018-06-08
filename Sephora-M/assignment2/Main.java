@@ -25,11 +25,11 @@ public class Main {
 		
 		
 		// or we can specify a in-order description of the desired tree
-		String[] inOrder = {"a","(","b","(","d","(","h",")","(","i",")",")","(","e","(","j",")",")",")",
+		String[] preOrder = {"a","(","b","(","d","(","h",")","(","i",")",")","(","e","(","j",")",")",")",
 				"(","c","(","f","(","k",")",")","(","g",")",")"};
-		System.out.println("in order description of the tree: "+ inOrder);
+		System.out.println("in order description of the tree: "+ preOrder);
 		
-		tree = new BinaryTree<String>(inOrder, "(",")");
+		tree = new BinaryTree<String>(preOrder, "(",")");
 		
 		for (String  key : tree.getKeys()) {
 			tree.printAncestors(key);
