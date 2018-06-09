@@ -4,14 +4,13 @@ public class Node {
 
 	private Node left;
 	private Node right;
-	boolean visited;
+	private Node parent;
 	private int value;
 
 	public Node(int value) {
 		this.left = null;
 		this.right = null;
 		this.value = value;
-		this.visited = false;
 	}
 
 	public Node getLeft() {
@@ -32,6 +31,15 @@ public class Node {
 
 	public int getValue() {
 		return value;
+	}
+
+	public void setParent(Node current) {
+		this.parent = current;
+
+	}
+
+	public Node getParent() {
+		return parent;
 	}
 
 }
