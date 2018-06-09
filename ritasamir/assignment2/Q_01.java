@@ -1,54 +1,58 @@
 package assignment_2;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class Q_01 {
 
-	private Stack<Node> stack = new Stack<>();;
-	
-	public Stack<Node> getStackOfAncestors(){
-		return stack;
+	/**
+	 * first we search the binary tree to get the node with specific key and
+	 * then tracing this node back to the root to get its ancestors
+	 * 
+	 * @param root
+	 *            of the binary tree
+	 * @param k
+	 *            key of node which we print its ancestors
+	 */
+	public void printAncestors(Node root, int k) {
+		Node nodeK = searchTree(root, k);
+		if (nodeK == null) {
+			throw new Error("That key doesn't exist in the binary tree");
+		}
+		System.out.println("Ancestors of node " + k + " :");
+		while (nodeK.getParent() != null) {
+			nodeK = nodeK.getParent();
+			System.out.print(nodeK.getValue() + " ");
+		}
+		System.out.println();
+
 	}
 
 	/**
-	 * @param head is the root of the binary tree
-	 * @param key 
+	 * search the tree for a node using bfs
+	 * 
+	 * @param node
+	 *            is the root of binary tree
+	 * @param k
+	 *            key we want to search for
+	 * @return the node with that key k
 	 */
-	public void printAncestors(Node head, int key) {
-		getAncestors(head, key);
-		System.out.println("The ancestors of the key "+key+" :");
-		if(stack.isEmpty()){
-			System.out.println("this is the head of the binaryTree!");
-		}
-		for (int i = 0; i < stack.size(); i++) {
-			System.out.print(stack.get(i).getValue()+" ");
-		}
-		System.out.println();
-	}
-
-	public void getAncestors(Node head, int key) {
-
-		if (head.getValue() == key)
-			return;
-
-		if (!head.visited) {
-			stack.push(head);
-			head.visited = true;
-		}
-
-		if (head.getLeft() != null && !head.getLeft().visited) {
-			getAncestors(head.getLeft(), key);
-		} else if (head.getRight() != null && !head.getRight().visited) {
-			getAncestors(head.getRight(), key);
-		} else {
-			stack.pop();
-			if (!stack.isEmpty()) {
-				getAncestors(stack.peek(), key);
-			} else {
-				throw new Error("Not exist in the binaryTree!!");
+	public Node searchTree(Node node, int k) {
+		Queue<Node> queue = new ArrayDeque<>();
+		Node current = null;
+		queue.add(node);
+		while (!queue.isEmpty()) {
+			current = queue.poll();
+			if (current.getValue() == k)
+				return current;
+			if (current.getLeft() != null) {
+				queue.add(current.getLeft());
+			}
+			if (current.getRight() != null) {
+				queue.add(current.getRight());
 			}
 		}
-
+		return null;
 	}
 
 }
