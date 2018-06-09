@@ -44,9 +44,16 @@ public class BinaryTree {
 			current.setLeft(node);
 		if (isRight)
 			current.setRight(node);
+		node.setParent(current);
 
 	}
 
+	/**
+	 * Prints for values of the tree in a post-order format
+	 * 
+	 * @param node
+	 *            root of the binary tree
+	 */
 	public void print(Node node) {
 		if (node != null) {
 			print(node.getLeft());
