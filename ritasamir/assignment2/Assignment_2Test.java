@@ -13,6 +13,7 @@ public class Assignment_2Test {
 		setBinaryTree();
 		Q_01 q = new Q_01();
 		q.printAncestors(bTree.getBinaryTree(), 12);
+		q.printAncestors(bTree.getBinaryTree(), 8);
 
 	}
 
@@ -22,6 +23,8 @@ public class Assignment_2Test {
 		Q_02 q_2 = new Q_02();
 		assertEquals(q_2.getCommonAncestor(bTree.getBinaryTree(), 6, 5)
 				.getValue(), 3);
+		assertEquals(q_2.getCommonAncestor(bTree.getBinaryTree(), 1, 6)
+				.getValue(), 7);
 	}
 
 	private void setBinaryTree() {
