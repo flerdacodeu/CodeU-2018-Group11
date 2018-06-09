@@ -2,26 +2,24 @@ package assignment_2;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.Stack;
 
 public class Q_02 {
 	Q_01 ancestors;
-	Stack<Node> stack;
-
 
 	/**
+	 * search the binary tree for
+	 * 
 	 * @param head
-	 *            is the root of the binary tree
+	 *            the root of the binary tree
 	 * @param key1
 	 * @param key2
 	 * @return node which represent the common ancestor for both key1 and key2
 	 */
 	public Node getCommonAncestor(Node head, int key1, int key2) {
 		ancestors = new Q_01();
-		ancestors.getAncestors(head, key1);
-		stack = ancestors.getStackOfAncestors();
-		while (!stack.isEmpty()) {
-			Node node = stack.pop();
+		Node node = ancestors.searchTree(head, key1);
+		while (node.getParent() != null) {
+			node = node.getParent();
 			if (isChildOf(node, key2)) {
 				return node;
 			}
@@ -30,7 +28,7 @@ public class Q_02 {
 	}
 
 	/**
-	 * check if the key is one of the node children
+	 * check if the key is one of the node children using bfs
 	 * 
 	 * @param node
 	 * @param key
