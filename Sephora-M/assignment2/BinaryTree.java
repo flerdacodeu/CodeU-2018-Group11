@@ -70,14 +70,14 @@ public class BinaryTree<T> {
 		
 		for (int i = 1; i < preOrderKeys.length; i++) {
 			BinaryTreeNode<T> current = stack.peek();
-			if (preOrderKeys[i].equals(openDelimiter)) {
+			if (isOpenDelimiter(preOrderKeys[i])) {
 				if (preOrderKeys.length == i + 1)
 					throw new IllegalArgumentException("Invalid pre-order list!");
 				addChild(current, preOrderKeys[i+1]);
 				stack.push(find(preOrderKeys[i+1]));
 				i++;
 			}
-			else if (preOrderKeys[i].equals(closeDelimiter)) {
+			else if (isCloseDelimiter(preOrderKeys[i])) {
 				stack.pop();
 			}
 		}
