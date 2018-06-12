@@ -38,14 +38,13 @@ public class BinaryTree<T> {
             return null;
         if(root.getKey().equals(element))
             return root;
+
         BinaryTreeNode<T> left = findNodeWithDFS(root.getLeftchild(), element);
-        BinaryTreeNode<T> right = findNodeWithDFS(root.getRightchild(), element);
-        if(left==null)
-            return right;
-        if(right==null)
+        if(left!=null)
             return left;
-        return null;
+        return findNodeWithDFS(root.getRightchild(), element);
     }
+
 
     /**Caller method of findNodeWithDFS method with root of the tree and the element we are looking for.
      * Complexities: depends on findNodeWithDFS method.
@@ -59,7 +58,7 @@ public class BinaryTree<T> {
             throw new NullPointerException("The tree is empty!");
         }
         if(element == null)
-            throw new NullPointerException("Invalid argument: "+ element +"!");
+            throw new NullPointerException("Invalid argument!");
         BinaryTreeNode<T> result = findNodeWithDFS(this.root, element);
         if(result == null){
             throw new NullPointerException("Element " + element +" is not in the tree!");
@@ -84,19 +83,19 @@ public class BinaryTree<T> {
             return new ArrayList<>();
 
         ArrayList<BinaryTreeNode<T>> left = p_Ancestors(root.getLeftchild(),target);
-        ArrayList<BinaryTreeNode<T>> right = p_Ancestors(root.getRightchild(),target);
-
         if(left!=null){
             left.add(root);
             return left;
         }
 
-        else if(right!=null){
+        ArrayList<BinaryTreeNode<T>> right = p_Ancestors(root.getRightchild(),target);
+        if(right!=null){
             right.add(root);
             return right;
         }
         return null;
     }
+
 
     /**Caller method of the p_Ancestors method. It finds the node with given parameter named "element",
      * calls the p_Ancestors and prints the elements of returned arraylist. It handles one exception as well, others are
@@ -126,6 +125,7 @@ public class BinaryTree<T> {
         System.out.println();
     }
 
+
     /**It finds target node's ancestors from lowest to highest and return them as an arraylist.
      * Complexity: Average O(logn)(The average height of the tree), Worst O(N)(Linear binary tree),
      * Best O(1)(When target is the root)--- N is the node count of the tree.
@@ -141,6 +141,7 @@ public class BinaryTree<T> {
         }
         return ancestors;
     }
+
 
     /**Calls find() and findAncestors() method and print the items of returned arraylist.
      * Exceptions are handled in find() method and it returns the node with given element.
@@ -166,19 +167,23 @@ public class BinaryTree<T> {
         System.out.println();
     }
 
-    /**Find the lowest common ancestor of the nodes with given parameters. Firstly, the method calls find() method with first
-     * parameter to find the corresponding node. After that, it choose this node as "root", and calls findNodeWithDFS()
-     * method to find if the other parameter(elem2) is found in the subtree with this "root". If not, findNodeWithDFS() function
-     * returns null and the search goes on. The new "root" is the "root"s parent and the same process is done. At some point,
-     * if the function finds "elem2", it returns current "root" as lowest common ancestor.
+
+    /**Finds the lowest common ancestor of the nodes with given parameters. Firstly, the method calls find() method with
+     * first parameter to find the corresponding node. After that, it choose this node as "rootnode", and calls
+     * findNodeWithDFS() method to find if the other parameter(elem2) is found in the subtree with this "rootnode".
+     * If not, findNodeWithDFS() function returns null and the search goes on. The new "rootnode" is the "rootnode"s
+     * parent and the same process is done. The "lastVisited" parameter prevents it from checking same subtrees over
+     * and over. At some point, if the function finds "elem2", it returns current "rootnode" as lowest common ancestor.
+     * If it could not find the node, then the node is the ancestor of the "rootnode", so it returns it as lowest common
+     * ancestor.
      * The order of the nodes (or parameters) is not important, so we easily picked the first parameter's node as a root.
-     * Complexities: Average O(N^2) since we are doing dfs for every parent of the "root",
+     * Complexities: Average O(N) since we checking all the nodes,
      *               Best O(1) if if two elements are the same.
      *               Worst O(N)
      * @param elem1 : element of the first node
      * @param elem2 : element of the other node
      * @throws NullPointerException if one or both of the elements are null.
-     * @return lowest common ancestor node, null otherwise
+     * @return lowest common ancestor node
      * */
     public BinaryTreeNode<T> lowestCommonAncestor(T elem1, T elem2){
 
@@ -187,19 +192,33 @@ public class BinaryTree<T> {
         if(elem2==null)
             throw new NullPointerException("Second argument is invalid!");
 
-        BinaryTreeNode<T> node1 = this.find(elem1);
+        BinaryTreeNode<T> rootnode = this.find(elem1);
+        BinaryTreeNode<T> lca = rootnode;
         BinaryTreeNode<T> found = null;
+        BinaryTreeNode<T> lastVisited = null;
+        if(elem1.equals(elem2))
+            return rootnode;
 
-        while(found==null && node1 !=null){
-            found = this.findNodeWithDFS(node1, elem2);
+        while(lca !=null){
+            if(lca.getLeftchild()!=null){
+                if(!lca.getLeftchild().equals(lastVisited))
+                    found = this.findNodeWithDFS(lca.getLeftchild(), elem2);
+            }
+            if(found==null && lca.getRightchild()!=null){
+                if(!lca.getRightchild().equals(lastVisited))
+                    found = this.findNodeWithDFS(lca.getRightchild(), elem2);
+            }
             if(found!=null)
                 break;
-            node1 = node1.getParent();
+            lastVisited = lca;
+            lca = lca.getParent();
         }
 
-        BinaryTreeNode<T> lca = node1;
-        return lca;
+        if(lca!=null)
+            return lca;
+        return this.find(elem2);
     }
+
 
     public static void main(String[] args){
 
@@ -216,15 +235,12 @@ public class BinaryTree<T> {
 
         BinaryTree<Integer> ourtree = new BinaryTree<>(root);
 
-        BinaryTreeNode<Integer> eleven = new BinaryTreeNode<>(11);
-        BinaryTreeNode<Integer> ten = new BinaryTreeNode<>(10,eleven,null);
-
         System.out.println("Calling printAncestors_Recursive...");
         System.out.print("Target node: "+ root.getKey() + ", ancestors: ");
         ourtree.printAncestors_Recursive(ourtree.root, 7);
         System.out.print("Target node: "+ six.getKey() + ", ancestors: ");
         ourtree.printAncestors_Recursive(ourtree.root, 6);
-        //System.out.print("Target node: "+ ten.getKey() + ", ancestors: ");
+        //System.out.print("Target node: 10" + ", ancestors: ");
         //ourtree.printAncestors_Recursive(ourtree.root,10);
         //System.out.print("Target node: null" + ", ancestors: ");
         //ourtree.printAncestors_Recursive(ourtree.root,null);
@@ -236,8 +252,8 @@ public class BinaryTree<T> {
         ourtree.printAncestors(7);
         System.out.print("Target node: "+ six.getKey() + ", ancestors: ");
         ourtree.printAncestors(6);
-        //System.out.print("Target node: "+ ten.getKey() + ", ancestors: ");
-        //ourtree.printAncestors(ten.getKey());
+        //System.out.print("Target node: 10" + ", ancestors: ");
+        //ourtree.printAncestors(10);
         //System.out.print("Target node: null" + ", ancestors: ");
         //ourtree.printAncestors(null);
 
@@ -258,9 +274,10 @@ public class BinaryTree<T> {
         System.out.println(ourtree.lowestCommonAncestor(7,7).getKey());
         System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: "+ six.getKey() +", lowest common ancestor: ");
         System.out.println(ourtree.lowestCommonAncestor(7,6).getKey());
-        //System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: "+ ten.getKey() +", lowest common ancestor: ");
+        //System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: 10" +", lowest common ancestor: ");
         //System.out.println(ourtree.lowestCommonAncestor(7,10).getKey());
-        //System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: "+ eleven.getKey() +", lowest common ancestor: ");
+        //System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: 11" +", lowest common ancestor: ");
         //System.out.println(ourtree.lowestCommonAncestor(7,11).getKey());
+
     }
 }
