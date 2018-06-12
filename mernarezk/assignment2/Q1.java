@@ -7,6 +7,42 @@ import javax.swing.plaf.synth.SynthSpinnerUI;
 
 public class Q1 {
 	/**
+	 * Method is divided into two parts, the first part calls searchTarget method which search all nodes
+	 * of the binary tree until the current node matches our target node and returns it, the second part
+	 * just travels this target node's parent up till the root and adds them to a list.
+	 * @param root root of the tree
+	 * @param target target value that we need to get it's parents
+	 * @return a list of the target node's parents.
+	 * @throws IllegalStateException
+	 */
+	public static List<Integer> getAncestorsWithParent(TreeNode root, int target) throws IllegalStateException {
+		TreeNode result = searchTarget(root, target);
+		if (result == null) {
+			throw new IllegalStateException("Target was not found in the tree.");
+		}
+		List<Integer> ancestors = new ArrayList<Integer>();
+		result = result.parent;
+		while (result != null) {
+			ancestors.add(0, result.val);
+			result = result.parent;
+		}
+		return ancestors;
+	}
+
+	private static TreeNode searchTarget(TreeNode root, int target) {
+		TreeNode result = null;
+		if (root == null)
+			return null;
+		if (root.val == target)
+			result = root;
+		if (root.left != null)
+			result = searchTarget(root.left, target);
+		if (root.right != null)
+			result = searchTarget(root.right, target);
+		return result;
+	}
+
+	/**
 	 * Method that gets all possible paths in a Binarty Tree, then traverses the
 	 * paths one by one and tries to find our target value in the lists ( since
 	 * there are no duplicates) once our target value was found we return a sublist
@@ -46,7 +82,7 @@ public class Q1 {
 			System.out.print(i + " ");
 		}
 	}
-
+	
 	private static boolean isTarget(List<Integer> l, int target) {
 		for (int i : l)
 			if (i == target)
