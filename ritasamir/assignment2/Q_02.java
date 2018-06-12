@@ -1,14 +1,8 @@
 package assignment_2;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 public class Q_02 {
-	Q_01 ancestors;
 
 	/**
-	 * search the binary tree for
-	 * 
 	 * @param head
 	 *            the root of the binary tree
 	 * @param key1
@@ -16,40 +10,20 @@ public class Q_02 {
 	 * @return node which represent the common ancestor for both key1 and key2
 	 */
 	public Node getCommonAncestor(Node head, int key1, int key2) {
-		ancestors = new Q_01();
-		Node node = ancestors.searchTree(head, key1);
+		Node node = Q_01.searchTree(head, key1);
+		// checks if the first key dosen't exist then return null
+		if (node == null) {
+			return null;
+		}
+		// for every ancestor of the key1 from bottom to up,if key2 exist on
+		// the subtree of this ancestor then it is the least common ancestor
 		while (node.getParent() != null) {
 			node = node.getParent();
-			if (isChildOf(node, key2)) {
+			if (Q_01.searchTree(node, key2) != null) {
 				return node;
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * check if the key is one of the node children using bfs
-	 * 
-	 * @param node
-	 * @param key
-	 * @return true if the key exist among the children of the node
-	 */
-	private boolean isChildOf(Node node, int key) {
-		Queue<Node> queue = new ArrayDeque<>();
-		queue.add(node);
-		while (!queue.isEmpty()) {
-			node = queue.poll();
-			if (node.getValue() == key)
-				return true;
-			if (node.getLeft() != null) {
-				queue.add(node.getLeft());
-			}
-			if (node.getRight() != null) {
-				queue.add(node.getRight());
-			}
-		}
-		return false;
-
 	}
 
 }
