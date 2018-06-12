@@ -174,8 +174,6 @@ public class BinaryTree<T> {
      * If not, findNodeWithDFS() function returns null and the search goes on. The new "rootnode" is the "rootnode"s
      * parent and the same process is done. The "lastVisited" parameter prevents it from checking same subtrees over
      * and over. At some point, if the function finds "elem2", it returns current "rootnode" as lowest common ancestor.
-     * If it could not find the node, then the node is the ancestor of the "rootnode", so it returns it as lowest common
-     * ancestor.
      * The order of the nodes (or parameters) is not important, so we easily picked the first parameter's node as a root.
      * Complexities: Average O(N) since we checking all the nodes,
      *               Best O(1) if if two elements are the same.
@@ -196,10 +194,10 @@ public class BinaryTree<T> {
         BinaryTreeNode<T> lca = rootnode;
         BinaryTreeNode<T> found = null;
         BinaryTreeNode<T> lastVisited = null;
-        if(elem1.equals(elem2))
-            return rootnode;
 
         while(lca !=null){
+            if(lca.getKey()==elem2)
+                return lca;
             if(lca.getLeftchild()!=null){
                 if(!lca.getLeftchild().equals(lastVisited))
                     found = this.findNodeWithDFS(lca.getLeftchild(), elem2);
@@ -214,9 +212,7 @@ public class BinaryTree<T> {
             lca = lca.getParent();
         }
 
-        if(lca!=null)
-            return lca;
-        return this.find(elem2);
+        return lca;
     }
 
 
