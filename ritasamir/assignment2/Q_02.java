@@ -17,9 +17,17 @@ public class Q_02 {
 		}
 		// for every ancestor of the key1 from bottom to up,if key2 exist on
 		// the subtree of this ancestor then it is the least common ancestor
+
 		while (node.getParent() != null) {
+			Node visitedChild = node;
 			node = node.getParent();
-			if (Q_01.searchTree(node, key2) != null) {
+			if (node.getValue() == key2) {
+				return node;
+			} else if (node.getLeft() != visitedChild
+					&& Q_01.searchTree(node.getLeft(), key2) != null) {
+				return node;
+			} else if (node.getRight() != visitedChild
+					&& Q_01.searchTree(node.getRight(), key2) != null) {
 				return node;
 			}
 		}
