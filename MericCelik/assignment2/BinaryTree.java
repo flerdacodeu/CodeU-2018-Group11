@@ -24,61 +24,105 @@ public class BinaryTree<T> {
         this.root = root;
     }
 
-    /**Finds the ancestors of the target node from lowest to root and print them to the standard output.
+
+    /**Finds the returns the node with given element if it occurs in the tree. Otherwise returns null. It does depth-first search in
+     * binary tree.
+     * Complexities: Average O(N), Worst O(N)(When we traverse all nodes),
+     * Best O(1)(When the root has the given element) --- N is the node count of the tree.
+     * @param root: root of the tree/subtree
+     * @param element: element that we are looking for
+     * @return the node with given element, null if not found.
+     * */
+    private BinaryTreeNode<T> findNodeWithDFS(BinaryTreeNode<T> root, T element){
+        if(root==null)
+            return null;
+        if(root.getKey().equals(element))
+            return root;
+        BinaryTreeNode<T> left = findNodeWithDFS(root.getLeftchild(), element);
+        BinaryTreeNode<T> right = findNodeWithDFS(root.getRightchild(), element);
+        if(left==null)
+            return right;
+        if(right==null)
+            return left;
+        return null;
+    }
+
+    /**Caller method of findNodeWithDFS method with root of the tree and the element we are looking for.
+     * Complexities: depends on findNodeWithDFS method.
+     * @param element: element we are looking for
+     * @throws NullPointerException if the tree does not contain a node with given element, the parameter is null or the
+     * tree is empty.
+     * @return node with given element
+     * */
+    public BinaryTreeNode<T> find(T element){
+        if(this.getRoot()==null){
+            throw new NullPointerException("The tree is empty!");
+        }
+        if(element == null)
+            throw new NullPointerException("Invalid argument: "+ element +"!");
+        BinaryTreeNode<T> result = findNodeWithDFS(this.root, element);
+        if(result == null){
+            throw new NullPointerException("Element " + element +" is not in the tree!");
+        }
+        return result;
+    }
+
+
+    /**Finds the ancestors of the target node from lowest to root and returns them as an ArrayList.
      * The speciality of this function is it does not need the parent field of the nodes.
      * So it is space-friendly.
      * Complexities: Average O(N), Worst O(N)(When we traverse all nodes),
      * Best O(1)(When the target is the root node) --- N is the node count of the tree.
      * @param root : root node of the tree
      * @param target : node whose ancestors are found
-     * @return 1 on 0 depending on whether the target is found or not.
+     * @return arraylist of ancestors from lowest to highest.
      * */
-
-    private int p_Ancestors(BinaryTreeNode<T> root, BinaryTreeNode<T> target){
+    private ArrayList<BinaryTreeNode<T>> p_Ancestors(BinaryTreeNode<T> root, BinaryTreeNode<T> target){
         if(root==null)
-            return 0;
+            return null;
         if(root.getKey().equals(target.getKey()))
-            return 1;
-        if(p_Ancestors(root.getLeftchild(),target)==1){
-            System.out.print(root.getKey() + " ");
-            return 1;
+            return new ArrayList<>();
+
+        ArrayList<BinaryTreeNode<T>> left = p_Ancestors(root.getLeftchild(),target);
+        ArrayList<BinaryTreeNode<T>> right = p_Ancestors(root.getRightchild(),target);
+
+        if(left!=null){
+            left.add(root);
+            return left;
         }
-        else if(p_Ancestors(root.getRightchild(),target)==1){
-            System.out.print(root.getKey() + " ");
-            return 1;
+
+        else if(right!=null){
+            right.add(root);
+            return right;
         }
-        return 0;
+        return null;
     }
 
-    /**Caller method of the findAncestors method. It prevents from wrong output.
-     * --If findAncestors function returns 0, it means the target is not in the binary tree.
-     * It prints a warning message to the standard output.
-     * --If root or target is null, it prints a warning message to the standard output.
+    /**Caller method of the p_Ancestors method. It finds the node with given parameter named "element",
+     * calls the p_Ancestors and prints the elements of returned arraylist. It handles one exception as well, others are
+     * handled by find() method.
+     * Complexities: depends on find() and p_Ancestors() methods.
+     * @throws NullPointerException if the parameter "root" is null.
      * @param root : root node of the tree
-     * @param target : node whose ancestors are found.
+     * @param element : element of node whose ancestors are found.
      * @return nothing.
      * */
+    public void printAncestors_Recursive(BinaryTreeNode<T> root, T element){
 
-    public void printAncestors_Recursive(BinaryTreeNode<T> root, BinaryTreeNode<T> target){
-        if(root==null){
-            System.out.println("There is no root node!");
-            return;
-        }
-        if(target==null){
-            System.out.println("There is no target node!");
-            return;
-        }
+        if(root==null)
+            throw new NullPointerException("Parameter \"root\" is invalid!");
+
+        BinaryTreeNode<T> target = this.find(element);
 
         if(target.equals(root)){
             System.out.println("Target node is the root of the tree, it has no parent!");
             return;
         }
 
-        int result = p_Ancestors(root,target);
-        if(result == 0){
-            System.out.println("This node is not in the binary tree!");
-            return;
-        }
+        ArrayList<BinaryTreeNode<T>> ancestors = p_Ancestors(root,target);
+        int ancestorcount = ancestors.size();
+        for(int i=0;i<ancestorcount;i++)
+            System.out.print(ancestors.get(i).getKey()+" ");
         System.out.println();
     }
 
@@ -88,7 +132,6 @@ public class BinaryTree<T> {
      * @param target : node whose ancestors are found.
      * @return arraylist of ancestors.
      * */
-
     public ArrayList<BinaryTreeNode<T>> findAncestors(BinaryTreeNode<T> target){
         ArrayList<BinaryTreeNode<T>> ancestors = new ArrayList<>();
         BinaryTreeNode<T> temp = target;
@@ -99,141 +142,73 @@ public class BinaryTree<T> {
         return ancestors;
     }
 
-    /**Calls findAncestors method and print the items of returned arraylist.
-     * It checks if the input is valid, tree is not empty, target is not the root and
-     * the target is in the tree. If these conditions are not hold, it prints suitable
-     * warning message to the standart output.
-     * Complexities: O(1) when warnings occurs, otherwise depend on findsAncestors method.
-     * @param target : node whose ancestors are found.
+    /**Calls find() and findAncestors() method and print the items of returned arraylist.
+     * Exceptions are handled in find() method and it returns the node with given element.
+     * If the target node is the root, it prints a warning message to the stardard output.
+     * Complexities: depends on find() and findsAncestors() methods.
+     * @param element : element of node whose ancestors are found.
      * @return nothing.
      * */
+    public void printAncestors(T element){
 
-    public void printAncestors(BinaryTreeNode<T> target){
-        if(target==null){
-            System.out.println("There is no target node!");
-            return;
-        }
-        if(this.getRoot()==null){
-            System.out.println("The tree is empty!");
-            return;
-        }
+        BinaryTreeNode<T> targetnode = this.find(element);
 
-        if(target.equals(this.root)){
+        if(targetnode.equals(this.root)){
             System.out.println("Target node is the root of the tree, it has no parent!");
             return;
         }
 
-        ArrayList<BinaryTreeNode<T>> ancestors = findAncestors(target);
+        ArrayList<BinaryTreeNode<T>> ancestors = findAncestors(targetnode);
         int ancestor_count = ancestors.size();
-        if(ancestor_count==0 || !this.getRoot().equals(ancestors.get(ancestor_count-1))){
-            System.out.println("This node is not in the binary tree!");
-            return;
-        }
 
         for(int i=0; i<ancestor_count;i++)
             System.out.print(ancestors.get(i).getKey() + " ");
         System.out.println();
     }
 
-    /**Calls the findAncestors method for two nodes and finds their lowest common ancestor by comparing
-     * resulting arrays. If one of them is in other's resulting array, this mean it is the ancestor of the other.
-     * Else if the array sizes are equal, it means they are in the same level. It traverse arrays simultaneously
-     * until it finds first common item. This is the lowest common ancestor.
-     * Else if the array sizes are not equal, it discards the deeper node's extra ancestors. It does it by incrementing
-     * the index value for the array traverse.
-     * The order of the nodes are not important.
-     * Complexities: O(1) when warnings occurs, otherwise depend on findsAncestors method.
-     * @param node1 : first node to consider
-     * @param node2 : other node to consider
-     * @return lowest common ancestor node
+    /**Find the lowest common ancestor of the nodes with given parameters. Firstly, the method calls find() method with first
+     * parameter to find the corresponding node. After that, it choose this node as "root", and calls findNodeWithDFS()
+     * method to find if the other parameter(elem2) is found in the subtree with this "root". If not, findNodeWithDFS() function
+     * returns null and the search goes on. The new "root" is the "root"s parent and the same process is done. At some point,
+     * if the function finds "elem2", it returns current "root" as lowest common ancestor.
+     * The order of the nodes (or parameters) is not important, so we easily picked the first parameter's node as a root.
+     * Complexities: Average O(N^2) since we are doing dfs for every parent of the "root",
+     *               Best O(1) if if two elements are the same.
+     *               Worst O(N)
+     * @param elem1 : element of the first node
+     * @param elem2 : element of the other node
+     * @throws NullPointerException if one or both of the elements are null.
+     * @return lowest common ancestor node, null otherwise
      * */
+    public BinaryTreeNode<T> lowestCommonAncestor(T elem1, T elem2){
 
-    public BinaryTreeNode<T> lowestCommonAncestor(BinaryTreeNode<T> node1, BinaryTreeNode<T> node2){
-        if(node1==null&&node2==null){
-            System.out.println("There are no first and second node!");
-            return null;
-        }
-        if(node1==null){
-            System.out.println("There is no first node!");
-            return null;
-        }
-        if(node2==null){
-            System.out.println("There is no second node!");
-            return null;
-        }
-        if(this.getRoot()==null){
-            System.out.println("The tree is empty!");
-            return null;
+        if(elem1==null)
+            throw new NullPointerException("First argument is invalid!");
+        if(elem2==null)
+            throw new NullPointerException("Second argument is invalid!");
+
+        BinaryTreeNode<T> node1 = this.find(elem1);
+        BinaryTreeNode<T> found = null;
+
+        while(found==null && node1 !=null){
+            found = this.findNodeWithDFS(node1, elem2);
+            if(found!=null)
+                break;
+            node1 = node1.getParent();
         }
 
-        if(node1.equals(this.getRoot())&&node2.equals(this.getRoot())){
-            System.out.println("Both of them are root!");
-            return null;
-        }
-
-        ArrayList<BinaryTreeNode<T>> ancestors1 = findAncestors(node1);
-        int ancestor_count1 = ancestors1.size();
-
-        ArrayList<BinaryTreeNode<T>> ancestors2 = findAncestors(node2);
-        int ancestor_count2 = ancestors2.size();
-
-        if(ancestor_count1==0 && ancestor_count2==0){
-            System.out.println("Both nodes have no ancestors!");
-            return null;
-        }
-
-        if(node1.equals(this.getRoot())){
-            if(ancestors2.contains(node1))
-                return this.getRoot();
-            else{
-                System.out.println("Second node is not in the tree!");
-                return null;
-            }
-        }
-        if(node2.equals(this.getRoot())){
-            if(ancestors1.contains(node2))
-                return this.getRoot();
-            else{
-                System.out.println("First node is not in the tree!");
-            }
-        }
-
-
-        if(!this.getRoot().equals(ancestors1.get(ancestor_count1-1))){
-            System.out.println("First node is not in the tree!");
-            return null;
-        }
-        if(!this.getRoot().equals(ancestors2.get(ancestor_count2-1))){
-            System.out.println("Second node is not in the tree!");
-            return null;
-        }
-
-        if(ancestors2.contains(node1))
-            return node1;
-        if(ancestors1.contains(node2))
-            return node2;
-
-
-        int index1=0, index2=0;
-        if(ancestor_count1>ancestor_count2)
-            index1 = ancestor_count1-ancestor_count2;
-        else if(ancestor_count2>ancestor_count1)
-            index2 = ancestor_count2-ancestor_count1;
-        while(!ancestors1.get(index1).equals(ancestors2.get(index2))){
-            index1+=1;
-            index2+=1;
-        }
-        return ancestors1.get(index1);
+        BinaryTreeNode<T> lca = node1;
+        return lca;
     }
-
 
     public static void main(String[] args){
 
-        //Same example with the pdf's
+        //Same example with the pdf's. Commented lines cause exceptions.
+
         BinaryTreeNode<Integer> six = new BinaryTreeNode<>(6);
         BinaryTreeNode<Integer> one = new BinaryTreeNode<>(1);
-        BinaryTreeNode<Integer> two = new BinaryTreeNode<>(2,one,null);
-        BinaryTreeNode<Integer> five = new BinaryTreeNode<>(5,null,six);
+        BinaryTreeNode<Integer> two = new BinaryTreeNode<>(2,one,six);
+        BinaryTreeNode<Integer> five = new BinaryTreeNode<>(5,null,null);
         BinaryTreeNode<Integer> three = new BinaryTreeNode<>(3,two,five);
         BinaryTreeNode<Integer> eight = new BinaryTreeNode<>(8);
         BinaryTreeNode<Integer> four = new BinaryTreeNode<>(4,null,eight);
@@ -246,46 +221,46 @@ public class BinaryTree<T> {
 
         System.out.println("Calling printAncestors_Recursive...");
         System.out.print("Target node: "+ root.getKey() + ", ancestors: ");
-        ourtree.printAncestors_Recursive(ourtree.root, root);
+        ourtree.printAncestors_Recursive(ourtree.root, 7);
         System.out.print("Target node: "+ six.getKey() + ", ancestors: ");
-        ourtree.printAncestors_Recursive(ourtree.root, six);
-        System.out.print("Target node: "+ ten.getKey() + ", ancestors: ");
-        ourtree.printAncestors_Recursive(ourtree.root,ten);
-        System.out.print("Target node: null" + ", ancestors: ");
-        ourtree.printAncestors_Recursive(ourtree.root,null);
-        System.out.print("Root: null, Target node: " + five.getKey() + ", ancestors: ");
-        ourtree.printAncestors_Recursive(null,five);
+        ourtree.printAncestors_Recursive(ourtree.root, 6);
+        //System.out.print("Target node: "+ ten.getKey() + ", ancestors: ");
+        //ourtree.printAncestors_Recursive(ourtree.root,10);
+        //System.out.print("Target node: null" + ", ancestors: ");
+        //ourtree.printAncestors_Recursive(ourtree.root,null);
+        //System.out.print("Root: null, Target node: " + five.getKey() + ", ancestors: ");
+        //ourtree.printAncestors_Recursive(null,5);
 
         System.out.println("\nCalling printAncestors...");
         System.out.print("Target node: "+ root.getKey() + ", ancestors: ");
-        ourtree.printAncestors(root);
+        ourtree.printAncestors(7);
         System.out.print("Target node: "+ six.getKey() + ", ancestors: ");
-        ourtree.printAncestors( six);
-        System.out.print("Target node: "+ ten.getKey() + ", ancestors: ");
-        ourtree.printAncestors(ten);
-        System.out.print("Target node: null" + ", ancestors: ");
-        ourtree.printAncestors(null);
+        ourtree.printAncestors(6);
+        //System.out.print("Target node: "+ ten.getKey() + ", ancestors: ");
+        //ourtree.printAncestors(ten.getKey());
+        //System.out.print("Target node: null" + ", ancestors: ");
+        //ourtree.printAncestors(null);
 
         System.out.println("\nCalling lowestCommonAncestor...");
         System.out.print("Node1: "+ three.getKey() + ", Node2: "+ five.getKey() +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(three,five).getKey());
+        System.out.println(ourtree.lowestCommonAncestor(3,5).getKey());
         System.out.print("Node1: "+ five.getKey() + ", Node2: "+ three.getKey() +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(five,three).getKey());
+        System.out.println(ourtree.lowestCommonAncestor(5,3).getKey());
         System.out.print("Node1: "+ six.getKey() + ", Node2: "+ eight.getKey() +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(six,eight).getKey());
+        System.out.println(ourtree.lowestCommonAncestor(6,8).getKey());
         System.out.print("Node1: "+ two.getKey() + ", Node2: "+ six.getKey() +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(two,six).getKey());
-        System.out.print("Node1: null"+ ", Node2: "+ six.getKey() +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(null,six));
-        System.out.print("Node1: "+ two.getKey() + ", Node2: null" +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(two,null));
+        System.out.println(ourtree.lowestCommonAncestor(2,6).getKey());
+        //System.out.print("Node1: null"+ ", Node2: "+ six.getKey() +", lowest common ancestor: ");
+        //System.out.println(ourtree.lowestCommonAncestor(null,6).getKey());
+        //System.out.print("Node1: "+ two.getKey() + ", Node2: null" +", lowest common ancestor: ");
+        //System.out.println(ourtree.lowestCommonAncestor(2,null).getKey());
         System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: "+ ourtree.root.getKey() +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(ourtree.root,ourtree.root));
+        System.out.println(ourtree.lowestCommonAncestor(7,7).getKey());
         System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: "+ six.getKey() +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(ourtree.root,six).getKey());
-        System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: "+ ten.getKey() +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(ourtree.root,ten));
-        System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: "+ eleven.getKey() +", lowest common ancestor: ");
-        System.out.println(ourtree.lowestCommonAncestor(ourtree.root,eleven));
+        System.out.println(ourtree.lowestCommonAncestor(7,6).getKey());
+        //System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: "+ ten.getKey() +", lowest common ancestor: ");
+        //System.out.println(ourtree.lowestCommonAncestor(7,10).getKey());
+        //System.out.print("Node1: "+ ourtree.root.getKey() + ", Node2: "+ eleven.getKey() +", lowest common ancestor: ");
+        //System.out.println(ourtree.lowestCommonAncestor(7,11).getKey());
     }
 }
