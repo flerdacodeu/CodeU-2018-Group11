@@ -12,18 +12,13 @@ class Q2Test {
 	void testCommonAncestor() {
 
 		BinaryTree tree = new BinaryTree();
-		tree.insert(3);
-		tree.insert(4);
-		tree.insert(1);
-		tree.insert(5);
-		tree.insert(7);
-		tree.insert(6);
-		tree.insert(2);
-		tree.insert(8);
-		result = tester.commonAnscestor(tree.root, 5, 2);
-		assertEquals(result.val, 3);
-		result = tester.commonAnscestor(tree.root, 6, 8);
-		assertEquals(result.val, 7);
+		int inorder[] = new int[] { 4, 2, 5, 1, 6, 3 };
+		int preorder[] = new int[] { 1, 2, 4, 5, 3, 6 };
+		tree.constructTree(preorder, inorder);
+		result = tester.commonAncestor(tree.root, 4, 5);
+		assertEquals(result.val, 2);
+		 result = tester.commonAncestor(tree.root, 6, 8);
+		 assertEquals(result.val, 7);
 	}
 
 }
