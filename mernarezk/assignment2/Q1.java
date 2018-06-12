@@ -35,9 +35,9 @@ public class Q1 {
 			return null;
 		if (root.val == target)
 			result = root;
-		if (root.left != null)
+		if (result!=null && root.left != null)
 			result = searchTarget(root.left, target);
-		if (root.right != null)
+		if (result!=null && root.right != null)
 			result = searchTarget(root.right, target);
 		return result;
 	}
