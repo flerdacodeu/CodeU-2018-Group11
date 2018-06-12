@@ -1,8 +1,5 @@
 package assignment_2;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 public class Q_01 {
 
 	/**
@@ -29,7 +26,8 @@ public class Q_01 {
 	}
 
 	/**
-	 * search the tree for a node using bfs
+	 * search the tree for a node, first we traverse the left subtree until we
+	 * get null then we go to the right sub trees
 	 * 
 	 * @param node
 	 *            is the root of binary tree
@@ -37,22 +35,17 @@ public class Q_01 {
 	 *            key we want to search for
 	 * @return the node with that key k
 	 */
-	public Node searchTree(Node node, int k) {
-		Queue<Node> queue = new ArrayDeque<>();
-		Node current = null;
-		queue.add(node);
-		while (!queue.isEmpty()) {
-			current = queue.poll();
-			if (current.getValue() == k)
-				return current;
-			if (current.getLeft() != null) {
-				queue.add(current.getLeft());
-			}
-			if (current.getRight() != null) {
-				queue.add(current.getRight());
-			}
-		}
-		return null;
+	public static Node searchTree(Node node, int k) {
+		if (node == null)
+			return null;
+		if (node.getValue() == k)
+			return node;
+		Node found = searchTree(node.getLeft(), k);
+		if (found != null)
+			return found;
+		else
+			return searchTree(node.getRight(), k);
+
 	}
 
 }
