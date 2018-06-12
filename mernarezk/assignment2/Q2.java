@@ -16,11 +16,11 @@ public class Q2 {
 	 *            second value that we need its common ancestor.
 	 * @return
 	 */
-	public static TreeNode commonAnscestor(TreeNode root, int p, int q) {
+	public static TreeNode commonAncestor(TreeNode root, int p, int q) {
 		if (root == null || p == root.val || q == root.val)
 			return root;
-		TreeNode left = commonAnscestor(root.left, p, q);
-		TreeNode right = commonAnscestor(root.right, p, q);
+		TreeNode left = commonAncestor(root.left, p, q);
+		TreeNode right = commonAncestor(root.right, p, q);
 		if (left != null && right != null)
 			return root;
 		return left == null ? right : left;
