@@ -7,44 +7,33 @@ package Assignment2;
  */
 public class BinaryTree {
 	TreeNode root;
-
 	/**
-	 * For testing and demonstration purposes the isnertion method happens int the
-	 * Binary Search tree because it's more imagineable how the tree structure will
-	 * look like.
-	 * 
-	 * @param val
-	 *            to be inserted
+	 * Method that takes only preorder and inorder representation of the tree and constructs
+	 * a Binary Tree of this.
+	 * @param preorder representation of the tree
+	 * @param inorder inorder representation of the tree
 	 */
-	public void insert(int val) {
-		TreeNode newNode = new TreeNode(val);
-		if (root == null) {
-			root = newNode;
-			return;
-		}
-		TreeNode current = root;
-		while (true) {
-			if (current.val < val) {
-				if (current.right == null) {
-					current.right = newNode;
-					return;
-				}
-				current = current.right;
-			} else {
-				if (current.left == null) {
-					current.left = newNode;
-					return;
-				}
-				current = current.left;
-			}
-		}
+	public void constructTree(int preorder[], int inorder[]) {
+		this.root = constructTreeHelper(0, 0, inorder.length - 1, preorder, inorder, null);
 	}
 
+	public TreeNode constructTreeHelper(int preStart, int inStart, int inEnd, int preorder[], int inorder[],
+			TreeNode prev) {
+		if (preStart > preorder.length - 1 || inStart > inEnd)
+			return null;
+		TreeNode root = new TreeNode(preorder[preStart], prev);
+		int index = 0;
+		for (int i = inStart; i <= inEnd; i++)
+			if (inorder[i] == root.val)
+				index = i;
+		root.left = constructTreeHelper(preStart + 1, inStart, index - 1, preorder, inorder, root);
+		root.right = constructTreeHelper(preStart + index - inStart + 1, index + 1, inEnd, preorder, inorder, root);
+		return root;
+	}
 	/**
 	 * Traverse whole tree in an inorder fashion to verify insertions were correct
 	 * 
-	 * @param root
-	 *            of the tree
+	 * @param root of the tree
 	 */
 	public void inOrder(TreeNode root) {
 
