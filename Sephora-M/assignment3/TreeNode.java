@@ -34,7 +34,20 @@ public abstract class TreeNode<T> {
 	public TreeNode<T> findNode(T key) {
 		return findNodeRecursive(this, key);
 	}
-
+	
+	/**
+	 * Looks for a child node with a specific key in the direct children of the current node.
+	 * @param childKey a Character, the key of the child to search
+	 * @return the TrieNode corresponding to the child with key childKey if it exists, null otherwise
+	 */
+	public TrieNode findChild(T childKey) {
+		for(TreeNode<T> child : this.children) {
+			if (child.getKey() == childKey)
+				return (TrieNode) child;
+		}
+		return null;
+	}
+	
 	private TreeNode<T> findNodeRecursive(TreeNode<T> current, T key) {
 		if (current.key.equals(key))
 			return current;

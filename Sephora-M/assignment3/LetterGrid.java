@@ -5,17 +5,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-/**TODO class description
+/**Grid of letters. Contains a method that, given a dictionnary represented as a Trie, allows to find 
+ * all the words that can be formed in the grid. 
  * 
  * @author Sephora-M
- *
- *Notes: 
- * 1) I am making the assumption that the grid is significantly larger than the 
- * the dictionary, such as there are far more words that could be made constructed
- * from the grid (whether they are meaningful or not) than there are words in the
- * dictionary.
- * 
- * 2) This implementation would only work if the dictionary is given as a Trie
  */
 public class LetterGrid {
 	char[][] grid;
@@ -26,17 +19,29 @@ public class LetterGrid {
 		if (grid == null || grid[0].length == 0)
 			throw new IllegalArgumentException("Cannot instatiate an empty or a null grid.");
 		this.grid = grid;
-		X = grid[0].length;
 		Y = grid.length;
+		X = grid[0].length;
 	}
 	
+	/**
+	 * Given a Trie object, returns a set of all the words in the Trie that can be formed in the grid 
+	 * @param dict a Trie, the dictionary
+	 * @return set of all the words from the dictionary that can be from in the grid
+	 * 
+	 * Note: the idea is to start from each letter in the grid and perform a DFS-like search. To optimize
+	 * the search, check at each time if the current word that we are constructing is a prefix of a word in the 
+	 * dictionary. It is not exactly a DFS, the subtility here is that we don't just want to visit all the 
+	 * nodes, but we want to visit them from different path. This is taken care here by keeping track of a
+	 * depthMap, which tells us when we visited each node. 
+	 */
 	public Set<String> dictionnaryWords(Trie dict){
 		HashSet<String> foundWords = new HashSet<String>();
 
 		for(int x = 0; x < X; x++) {
 			for(int y = 0; y < Y; y++) {
-				int[][] depthMap = new int[X][Y];
+				int[][] depthMap = new int[Y][X];
 				int currentDepth = 1;
+				depthMap[y][x] = currentDepth;
 				Point firstLetterCoord = new Point(x,y);
 				String currentPrefix = getLetter(firstLetterCoord)+"";
 				if (dict.isWord(currentPrefix))
@@ -56,12 +61,11 @@ public class LetterGrid {
     	
     	if (neighbors.size() == 0)
     		return;
-    	
     	for (Point n : neighbors) {
     		String newPrefix = currentPrefix + getLetter(n);
     		if (dict.isPrefix(newPrefix)){
     			int[][] newDepthMap = deepCopy(depthMap);
-    			newDepthMap[n.x][n.y] = currentDepth + 1;
+    			newDepthMap[n.y][n.x] = currentDepth + 1;
     			if (dict.isWord(newPrefix))
     				foundWords.add(newPrefix);
     			searchWords(n, currentDepth +1, newDepthMap, dict, foundWords, newPrefix);
@@ -71,72 +75,36 @@ public class LetterGrid {
 	}
     
     private char getLetter(Point p) {
-    	return grid[p.x][p.y];
+    	return grid[p.y][p.x];
     }
     
     private int[][] deepCopy(int[][] depthMap) {
-        int[][] copy = new int[X][Y];
+        int[][] copy = new int[Y][X];
         
         for (int x = 0; x < X; x++) {
           for (int y = 0; y < Y; y++) {
-        		  copy[x][y] = depthMap[x][y];
+        		  copy[y][x] = depthMap[y][x];
           }
         }
         
         return copy;
       }
     
-	private HashSet<String> recursiveDFS(Trie dict, HashSet<String> foundWords, Point start, boolean[][] visited){
-
-        visited[start.x][start.y] = true;
- 
-        ArrayList<Point> neighbors = findNeighbors(start);
-        for(Point n : neighbors){
-            if (!visited[n.x][n.y])
-            	recursiveDFS(dict, foundWords, n, visited);
-        }
-        
-        return foundWords;
-    }
- 
-
-    public HashSet<String> DFSWords(Trie dict, HashSet<String> foundWords, Point start) {
-        boolean[][] visited = new boolean[X][Y];
-        return recursiveDFS(dict, foundWords, start, visited);
-    }
-    
-	public ArrayList<Point> findNeighbors(Point p){
+	private ArrayList<Point> findNeighbors(Point p, int currentDepth, int[][] depthMap){
 		ArrayList<Point> neighbors = new ArrayList<Point>();
 		
 		for (int dx = -1; dx <= 1; dx++) {
 			for (int dy = -1; dy <= 1; dy++) {
 				Point neighbor = new Point(p.x + dx, p.y + dy);
-				boolean XisOutOfBounds = (neighbor.x < 0 || neighbor.x >= Y) ;
+				boolean XisOutOfBounds = (neighbor.x < 0 || neighbor.x >= X) ;
 				boolean YisOutOfBounds = (neighbor.y < 0 || neighbor.y >= Y); 
 				boolean isStartingPoint = (dx == 0 && dy ==0);
+				
 				
 				if (!XisOutOfBounds && !YisOutOfBounds && !isStartingPoint) {
-					neighbors.add(neighbor);
-				}
-			}
-			
-		}
-		return neighbors;
-	}
-	
-	public ArrayList<Point> findNeighbors(Point p, int currentDepth, int[][] depthMap){
-		ArrayList<Point> neighbors = new ArrayList<Point>();
-		
-		for (int dx = -1; dx <= 1; dx++) {
-			for (int dy = -1; dy <= 1; dy++) {
-				Point neighbor = new Point(p.x + dx, p.y + dy);
-				boolean XisOutOfBounds = (neighbor.x < 0 || neighbor.x >= Y) ;
-				boolean YisOutOfBounds = (neighbor.y < 0 || neighbor.y >= Y); 
-				boolean isStartingPoint = (dx == 0 && dy ==0);
-				boolean visited = (depthMap[neighbor.x][neighbor.y] > 0) && (depthMap[neighbor.x][neighbor.y] < currentDepth);
-				
-				if (!XisOutOfBounds && !YisOutOfBounds && !isStartingPoint && !visited) {
-					neighbors.add(neighbor);
+					boolean visited = (depthMap[neighbor.y][neighbor.x] > 0) && (depthMap[neighbor.y][neighbor.x] < currentDepth);
+					if (!visited)
+						neighbors.add(neighbor);
 				}
 			}
 			
