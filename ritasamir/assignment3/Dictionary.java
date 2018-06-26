@@ -2,10 +2,9 @@ package assignment_3;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 public class Dictionary {
-	Hashtable<Integer, String> dictionary;
+	HashSet<String> dictionary;
 	HashSet<String> prefixes;
 
 	/**
@@ -14,10 +13,10 @@ public class Dictionary {
 	 * @param words
 	 */
 	public Dictionary(ArrayList<String> words) {
-		dictionary = new Hashtable<>(words.size());
+		dictionary = new HashSet<>();
 		prefixes = new HashSet<>();
 		for (int i = 0; i < words.size(); i++) {
-			dictionary.put(i, words.get(i));
+			dictionary.add(words.get(i));
 			getPrefixes(words.get(i));
 		}
 	}
@@ -25,9 +24,7 @@ public class Dictionary {
 	private void getPrefixes(String string) {
 		for (int i = 1; i < string.length() + 1; i++) {
 			String prefix = string.substring(0, i);
-			if (!prefixes.contains(prefix)) {
-				prefixes.add(prefix);
-			}
+			prefixes.add(prefix);
 		}
 	}
 
@@ -45,7 +42,5 @@ public class Dictionary {
 	 */
 	public boolean isPrefix(String word) {
 		return prefixes.contains(word);
-
 	}
-
 }
