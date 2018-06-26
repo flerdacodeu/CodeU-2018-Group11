@@ -11,9 +11,9 @@ import java.util.Set;
  * @author Sephora-M
  */
 public class LetterGrid {
-	char[][] grid;
-	int X;
-	int Y;
+	private final char[][] grid;
+	private final int X;
+	private final int Y;
 	
 	public LetterGrid(char[][] grid) {
 		if (grid == null || grid[0].length == 0)
@@ -25,23 +25,24 @@ public class LetterGrid {
 	
 	/**
 	 * Given a Trie object, returns a set of all the words in the Trie that can be formed in the grid 
-	 * @param dict a Trie, the dictionary
-	 * @return set of all the words from the dictionary that can be from in the grid
-	 * 
+	 * 	 
 	 * Note: the idea is to start from each letter in the grid and perform a DFS-like search. To optimize
 	 * the search, check at each time if the current word that we are constructing is a prefix of a word in the 
 	 * dictionary. It is not exactly a DFS, the subtility here is that we don't just want to visit all the 
 	 * nodes, but we want to visit them from different path. This is taken care here by keeping track of a
 	 * depthMap, which tells us when we visited each node. 
+	 * 
+	 * @param dict a Trie, the dictionary
+	 * @return set of all the words from the dictionary that can be from in the grid
 	 */
 	public Set<String> dictionnaryWords(Trie dict){
 		HashSet<String> foundWords = new HashSet<String>();
 
 		for(int x = 0; x < X; x++) {
 			for(int y = 0; y < Y; y++) {
-				int[][] depthMap = new int[Y][X];
+				boolean[][] depthMap = new boolean[Y][X];
 				int currentDepth = 1;
-				depthMap[y][x] = currentDepth;
+				depthMap[y][x] = true;
 				Point firstLetterCoord = new Point(x,y);
 				String currentPrefix = getLetter(firstLetterCoord)+"";
 				if (dict.isWord(currentPrefix))
@@ -54,43 +55,28 @@ public class LetterGrid {
 		return foundWords;
 	}
 	
-    private void searchWords(Point letter, int currentDepth, int[][] depthMap, Trie dict,
+    private void searchWords(Point letter, int currentDepth, boolean[][] depthMap, Trie dict,
 			HashSet<String> foundWords, String currentPrefix) {
     	
     	ArrayList<Point> neighbors = findNeighbors(letter, currentDepth, depthMap);
     	
-    	if (neighbors.size() == 0)
-    		return;
     	for (Point n : neighbors) {
     		String newPrefix = currentPrefix + getLetter(n);
     		if (dict.isPrefix(newPrefix)){
-    			int[][] newDepthMap = deepCopy(depthMap);
-    			newDepthMap[n.y][n.x] = currentDepth + 1;
+    			depthMap[n.y][n.x] = true;
     			if (dict.isWord(newPrefix))
     				foundWords.add(newPrefix);
-    			searchWords(n, currentDepth +1, newDepthMap, dict, foundWords, newPrefix);
+    			searchWords(n, currentDepth +1, depthMap, dict, foundWords, newPrefix);
+    			depthMap[n.y][n.x] = false;
     		}
-    	}
-		
+    	}	
 	}
     
     private char getLetter(Point p) {
     	return grid[p.y][p.x];
     }
-    
-    private int[][] deepCopy(int[][] depthMap) {
-        int[][] copy = new int[Y][X];
-        
-        for (int x = 0; x < X; x++) {
-          for (int y = 0; y < Y; y++) {
-        		  copy[y][x] = depthMap[y][x];
-          }
-        }
-        
-        return copy;
-      }
-    
-	private ArrayList<Point> findNeighbors(Point p, int currentDepth, int[][] depthMap){
+     
+	private ArrayList<Point> findNeighbors(Point p, int currentDepth, boolean[][] depthMap){
 		ArrayList<Point> neighbors = new ArrayList<Point>();
 		
 		for (int dx = -1; dx <= 1; dx++) {
@@ -102,12 +88,11 @@ public class LetterGrid {
 				
 				
 				if (!XisOutOfBounds && !YisOutOfBounds && !isStartingPoint) {
-					boolean visited = (depthMap[neighbor.y][neighbor.x] > 0) && (depthMap[neighbor.y][neighbor.x] < currentDepth);
+					boolean visited = (depthMap[neighbor.y][neighbor.x]);
 					if (!visited)
 						neighbors.add(neighbor);
 				}
 			}
-			
 		}
 		return neighbors;
 	}

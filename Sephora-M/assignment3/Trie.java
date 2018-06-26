@@ -77,6 +77,8 @@ public class Trie extends Tree<Character>{
 		prefix = prefix.toLowerCase();
 		if (!validWord(prefix))
 			return false;
+		if (prefix.isEmpty())
+			return true;
 		
 		TrieNode lastLetter = findLastLetter(prefix);
 		
