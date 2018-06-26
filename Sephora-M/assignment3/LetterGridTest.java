@@ -40,7 +40,7 @@ class LetterGridTest {
 	
 	
 	@Test
-	public void testPrefix() {
+	public void testIsPrefix() {
 		String[] words = {"CAR","CARDS","CART","CAT"};
 		Trie dictionnary = new Trie(words);
 		
@@ -52,7 +52,7 @@ class LetterGridTest {
 	}
 	
 	@Test
-	public void testNotPrefix() {
+	public void testIsNotPrefix() {
 		String[] words = {"CAR","CARDS","CART","CAT"};
 		Trie dictionnary = new Trie(words);
 		
@@ -83,10 +83,6 @@ class LetterGridTest {
 		thrown.expect(IllegalArgumentException.class);
 		char[][] letterGrid = {{}, {}};
 		LetterGrid grid = new LetterGrid(letterGrid); 
-		
-		Set<String> foundwords = grid.dictionnaryWords(dictionnary);
-		
-		assertTrue(foundwords.isEmpty());
 	}
 	
 	@Test
