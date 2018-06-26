@@ -1,26 +1,23 @@
+import java.util.HashSet;
 
 /**@author AycaMericCelik
  * */
 public class Trie {
     private TrieNode root;
 
-    public Trie(){
-        this.root = new TrieNode();
-    }
-
-    public Trie(String[] words){
+    public Trie(HashSet<String> words){
+        if(words==null)
+            throw new IllegalArgumentException("Argument is null!");
         this.root = new TrieNode();
         for(String word:words)
             this.addWord(word);
     }
 
-    public void addWord(String word)
-    {
+    public void addWord(String word) {
         root.addWord(word.toLowerCase(),false);
     }
 
-    public void addPrefix(String word)
-    {
+    public void addPrefix(String word) {
         root.addWord(word.toLowerCase(),true);
     }
 
@@ -34,6 +31,9 @@ public class Trie {
      * @return boolean that indicates whether the word/prefix is found or not.
      * */
     public boolean find(String word, boolean isPrefix) {
+        if(word==null)
+            return false;
+
         TrieNode current = this.root;
         for (int i = 0; i < word.length(); i++) {
             char ch = word.charAt(i);

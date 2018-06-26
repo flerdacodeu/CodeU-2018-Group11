@@ -44,8 +44,7 @@ public class TrieNode {
      * @param word: word to be added
      * @param isPrefix: is the word prefix or not?
      * */
-    public void addWord(String word, boolean isPrefix)
-    {
+    public void addWord(String word, boolean isPrefix) {
         this.isLeaf = false;
 
         int charPos = word.charAt(0) - 'a';
@@ -65,9 +64,12 @@ public class TrieNode {
     }
 
     /**Gets the node with given character.
+     * @param c: character to search
+     * @return the node with that character.
      * */
-    public TrieNode getNode(char c)
-    {
+    public TrieNode getNode(char c) {
+        if(c=='\u0000')
+            return children[Character.toLowerCase(c)];
         return children[Character.toLowerCase(c) - 'a'];
     }
 }
