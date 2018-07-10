@@ -17,11 +17,11 @@ public class CountingIslands {
 	 *            is the number of columns
 	 * @return the number of islands.
 	 */
-	// looping through the 2d array and search for an island when we find a land
-	// w do a dfs search to get all possible lands next to that land, while
-	// doing the dfs we convert the land to water so we won't count this island
-	// again and finally increasing the counter of islands by one every time we
-	// start with a land.
+	/* looping through the 2d array and search for an island when we find a land
+	   we do a dfs search to get all possible lands next to that land, while
+	   doing the dfs we convert the land to water so we won't count this island
+	   again and finally increasing the counter of islands by one every time we
+	   start with a land.*/
 	public int getNumberOfIslands(boolean[][] tiles) {
 		int counter = 0;
 		for (int i = 0; i < tiles.length; i++) {
