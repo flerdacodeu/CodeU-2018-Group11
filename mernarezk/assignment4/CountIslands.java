@@ -24,7 +24,7 @@ public class CountIslands {
 		return count;
 	}
 
-	public void explore(boolean grid[][], int m, int n, int i, int j) {
+	private void explore(boolean grid[][], int m, int n, int i, int j) {
 		if (i >= m || i < 0 || j >= n || j < 0 || !grid[i][j])
 			return;
 		grid[i][j] = false;
