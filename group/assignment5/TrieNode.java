@@ -7,11 +7,9 @@
  *
  */
 public class TrieNode extends DirectedGraphNode<Character> {
-    private boolean isEndOfWord = false;
 
-    public TrieNode(Character key, boolean isEndOfWord) {
+    public TrieNode(Character key) {
         super(key);
-        this.isEndOfWord =  isEndOfWord;
     }
 
     /**
@@ -22,13 +20,12 @@ public class TrieNode extends DirectedGraphNode<Character> {
      * @param isEndOfWord
      * @return
      */
-    public TrieNode addChild(Character childKey, boolean isEndOfWord) {
+    public TrieNode addChild(Character childKey) {
         TrieNode foundChild = hasChild(childKey);
         if (foundChild != null) {
-            foundChild.setEndOfWord(isEndOfWord);
             return foundChild;
         } else {
-            TrieNode child = new TrieNode(childKey, isEndOfWord);
+            TrieNode child = new TrieNode(childKey);
             child.addParent(this);
             this.children.add(child);
             return child;
@@ -42,19 +39,4 @@ public class TrieNode extends DirectedGraphNode<Character> {
         }
         return null;
     }
-
-    public boolean isEndOfWord() {
-        return isEndOfWord;
-    }
-
-    /**
-     * Update the isEndOfWord attribute of an existing node. This implementations does not support
-     * word suppression, therefore a isEndOfWord of value 'true' cannot be changed.
-     * @param isEndOfWord
-     */
-    public void setEndOfWord(boolean isEndOfWord) {
-        if(!isEndOfWord()) // can only change from false to true
-            this.isEndOfWord = isEndOfWord;
-    }
-
 }
