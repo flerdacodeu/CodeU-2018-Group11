@@ -12,14 +12,14 @@ public class Trie extends DirectedGraph<Character>{
 
 
     public Trie() {
-        super(new TrieNode(ROOT_SYMBOL,false));
-        TrieNode root = new TrieNode(ROOT_SYMBOL, false);
+        super(new TrieNode(ROOT_SYMBOL));
+        TrieNode root = new TrieNode(ROOT_SYMBOL);
         this.root = root;
     }
 
     public Trie(String[] words) {
-        super(new TrieNode(ROOT_SYMBOL,false));
-        TrieNode root = new TrieNode(ROOT_SYMBOL, false);
+        super(new TrieNode(ROOT_SYMBOL));
+        TrieNode root = new TrieNode(ROOT_SYMBOL);
         this.root = root;
         addWords(words);
     }
@@ -32,7 +32,7 @@ public class Trie extends DirectedGraph<Character>{
         word = word.toLowerCase();
         TrieNode currentLetter = (TrieNode) this.root;
         for (int i=0; i < word.length() ; i++) {
-            currentLetter = currentLetter.addChild(word.charAt(i), (i==word.length()-1));
+            currentLetter = currentLetter.addChild(word.charAt(i));
         }
 
     }
@@ -46,7 +46,6 @@ public class Trie extends DirectedGraph<Character>{
             addWord(word);
     }
 
-
     /**
      * Checks whether a word is contained in the Trie
      * @param word String, word to be found
@@ -59,7 +58,7 @@ public class Trie extends DirectedGraph<Character>{
 
         TrieNode lastLetter = findLastLetter(word);
 
-        if (lastLetter != null && lastLetter.isEndOfWord()) {
+        if (lastLetter != null) {
             return true;
         }
         return false;
@@ -110,5 +109,4 @@ public class Trie extends DirectedGraph<Character>{
 
         return currentLetter;
     }
-
 }
