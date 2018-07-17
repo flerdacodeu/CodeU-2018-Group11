@@ -55,14 +55,14 @@ public class DirectedGraphNode<T> {
         if (current.key.equals(key))
             return current;
 
-        DirectedGraphNode<T> found;
+        DirectedGraphNode<T> found = null;
         for (DirectedGraphNode<T> child : current.getChildren()) {
             found = findNodeRecursive(child, key);
             if (found != null) {
                 return found;
             }
         }
-        return null;
+        return found;
     }
 
     /**
