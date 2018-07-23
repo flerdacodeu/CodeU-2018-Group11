@@ -1,3 +1,4 @@
+import assignment5.TrieNode;
 
 /**
  * Implement a Trie which extends the more general Tree<Character> data structure. This implementation is
@@ -93,7 +94,7 @@ public class Trie extends DirectedGraph<Character>{
         if (word.isEmpty())
             return null;
 
-        TrieNode currentLetter = root.findChild(word.charAt(0));
+        TrieNode currentLetter = (TrieNode) root.findChild(word.charAt(0));
 
         if (currentLetter == null)
             return null;
@@ -102,7 +103,7 @@ public class Trie extends DirectedGraph<Character>{
             return currentLetter;
 
         for (int i=1; i < word.length() ; i++) {
-            currentLetter = currentLetter.findChild(word.charAt(i));
+            currentLetter = (TrieNode) currentLetter.findChild(word.charAt(i));
             if (currentLetter == null)
                 return null;
         }

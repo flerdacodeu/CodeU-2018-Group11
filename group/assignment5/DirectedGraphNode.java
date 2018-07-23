@@ -41,12 +41,12 @@ public class DirectedGraphNode<T> {
      * @param childKey a Character, the key of the child to search
      * @return the DirectedGraphNode corresponding to the child with key childKey if it exists, null otherwise
      */
-    public TrieNode findChild(T childKey) {
+    public DirectedGraphNode<T> findChild(T childKey) {
         if(childKey==null)
             throw new IllegalArgumentException("The argument is null!");
         for(DirectedGraphNode<T> child : this.children) {
             if (child.getKey() == childKey)
-                return (TrieNode) child;
+                return child;
         }
         return null;
     }
@@ -91,7 +91,7 @@ public class DirectedGraphNode<T> {
         return parents;
     }
 
-    public void addParent(DirectedGraphNode<T> parent) {
+    protected void addParent(DirectedGraphNode<T> parent) {
         if(parent==null)
             throw new IllegalArgumentException("The argument is null!");
         this.parents.add(parent);
@@ -111,7 +111,7 @@ public class DirectedGraphNode<T> {
         return childrensKeys;
     }
 
-    public boolean removeChild(DirectedGraphNode<T> node) {
+    protected boolean removeChild(DirectedGraphNode<T> node) {
         if(node==null)
             throw new IllegalArgumentException("The argument is null!");
         for(DirectedGraphNode<T> child : children) {
@@ -123,7 +123,7 @@ public class DirectedGraphNode<T> {
         return false;
     }
 
-    public boolean removeParent(DirectedGraphNode<T> node) {
+    protected boolean removeParent(DirectedGraphNode<T> node) {
         if(node==null)
             throw new IllegalArgumentException("The argument is null!");
         for (DirectedGraphNode<T> parent : parents) {
