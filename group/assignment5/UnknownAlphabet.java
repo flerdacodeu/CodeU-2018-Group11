@@ -33,6 +33,8 @@ public class UnknownAlphabet {
         Trie dictionaryTrie = new Trie(dictionary);
         ArrayList<ArrayList<Character>> rules = deriveRules(dictionaryTrie);
         rulesGraph = buildRulesGraph(rules);
+        System.out.println("All possible Alphabets :");
+        allPossibleAlphabet(removeDuplicate(rules),0,removeDuplicate(rules).size()-1 );
     }
 
     /**
@@ -146,4 +148,50 @@ public class UnknownAlphabet {
         }
         return reversed;
     }
+    private void allPossibleAlphabet(ArrayList<ArrayList<Character>> rules,int start,int end){
+	     if(start==end){
+	    	 for(int i=0;i<rules.size();i++){
+	    		 for(char c : rules.get(i))
+	    			 System.out.print(c+" ");
+	    	 } 
+	    	 System.out.println();
+	     }
+	     else{
+	    	 for(int i=start;i<=end;i++){
+	    		 rules= changePosition(rules,start,i);
+	    		 allPossibleAlphabet(rules, start+1, end);
+	    		 rules=changePosition(rules,start,i);
+	    	 }
+	     }
+ }
+ 
+private ArrayList<ArrayList<Character>> changePosition(ArrayList<ArrayList<Character>> rules, int start, int i) {
+	ArrayList<Character> temp = rules.get(start);
+	rules.set(start, rules.get(i));
+	rules.set(i, temp);
+	
+	return rules;
+}
+
+private ArrayList<ArrayList<Character>> removeDuplicate(ArrayList<ArrayList<Character>> rules){
+	ArrayList<ArrayList<Character>> newRules = new ArrayList<ArrayList<Character>>();
+	newRules.add(rules.get(0));
+	 for(int i=1;i<rules.size();i++){
+		 if(!newRules.contains(rules.get(i))){
+			 if(!isSubset(rules.get(i),newRules))
+			 newRules.add(rules.get(i));
+		 }
+	 }
+	 return newRules;
+}
+
+private boolean isSubset(ArrayList<Character> arrayList,ArrayList<ArrayList<Character>> newRules) {
+	for(char c: arrayList){
+		for(int i=0;i<newRules.size();i++){
+			if(newRules.get(i).contains(c))
+				return true;
+		}
+	}
+	return false;
+}
 }
