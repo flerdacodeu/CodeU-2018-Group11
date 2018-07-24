@@ -9,12 +9,11 @@ import java.util.Arrays;
 public class UnknownAlphabetTest {
 
     @Test
-    //TODO it raises error
     public void emptyDictionary(){
         String[] dict = {};
-        //UnknownAlphabet a = new UnknownAlphabet(dict);
-        //ArrayList<Character> alphabet = a.alphabet();
-        //Assert.assertEquals(alphabet, new ArrayList<ArrayList<Character>>());
+        UnknownAlphabet a = new UnknownAlphabet(dict);
+        ArrayList<Character> alphabet = a.alphabet();
+        Assert.assertEquals(alphabet, new ArrayList<ArrayList<Character>>());
     }
 
     @Test

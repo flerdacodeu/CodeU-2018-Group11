@@ -1,6 +1,10 @@
 
 import java.util.ArrayList;
 
+import assignment5.DirectedGraph;
+import assignment5.DirectedGraphNode;
+import assignment5.Trie;
+
 /**
  * Class that implements the method for finding an alphabet given a dictionary. 
  *
@@ -78,35 +82,37 @@ public class UnknownAlphabet {
      *
      **/
     private DirectedGraph<Character> buildRulesGraph(ArrayList<ArrayList<Character>> rules) {
-        DirectedGraph<Character> rulesTree = new DirectedGraph<>(new DirectedGraphNode<>(Trie.ROOT_SYMBOL));
-
-        for (ArrayList<Character> rule : rules) {
-            int ruleLength = rule.size();
-            DirectedGraphNode<Character> current = rulesTree.find(rule.get(ruleLength-1));
-            if (current == null) {
-                rulesTree.addChild(rulesTree.root, new DirectedGraphNode<>(rule.get(ruleLength-1)));
-                current = rulesTree.find(rule.get(ruleLength-1));
-            }
-
-            for(int i = ruleLength -2 ; i>=0 ; i--) {
-                DirectedGraphNode<Character> next = rulesTree.find(rule.get(i));
-                if (next == null) {
-                    rulesTree.addChild(current, new DirectedGraphNode<>(rule.get(i)));
-                    current = rulesTree.find(rule.get(i));
-                } else { // need to check if next is in the subtree starting from current
-                    if (next.findNode(current.getKey()) != null)  // if next comes before current in the tree, the dictionnary is inconsistent!
-                        throw new IllegalArgumentException("The given dictionary is inconsistant!");
-
-                    DirectedGraphNode<Character> childOfCurrent = current.findNode(next.getKey());
-                    if (childOfCurrent == null) { // if next is not in current's subtree, add it
-                        current.getChildren().add(next);
-                        next.addParent(current);
-                    }
-                }
-            }
-        }
-        return rulesTree;
-    }
+		DirectedGraph<Character> rulesTree = new DirectedGraph<Character>(new DirectedGraphNode<Character>(Trie.ROOT_SYMBOL)); 
+		
+		for (ArrayList<Character> rule : rules) {
+			if(!rule.isEmpty()) {
+				int ruleLength = rule.size();
+				DirectedGraphNode<Character> current = rulesTree.find(rule.get(ruleLength-1));
+				if (current == null) {
+					rulesTree.addChild(rulesTree.root, new DirectedGraphNode<Character>(rule.get(ruleLength-1)));
+					current = rulesTree.find(rule.get(ruleLength-1));
+				}
+					
+				for(int i = ruleLength -2 ; i>=0 ; i--) {
+					DirectedGraphNode<Character> next = rulesTree.find(rule.get(i));
+					if (next == null) {
+						rulesTree.addChild(current, new DirectedGraphNode<Character>(rule.get(i)));
+						current = rulesTree.find(rule.get(i));
+					} else { // need to check if next is in the subtree starting from current
+						if (next.findNode(current.getKey()) != null)  // if next comes before current in the tree, the dictionnary is inconsistent!
+							throw new IllegalArgumentException("The given dictionary is inconsistant!");
+						
+						DirectedGraphNode<Character> childOfCurrent = current.findNode(next.getKey());
+						if (childOfCurrent == null) { // if next is not in current's subtree, add it
+							current.getChildren().add(next);
+							next.addParent(current);
+						}
+					}
+				}
+			}
+		}
+		return rulesTree;
+	}
 
     /**
      * This method derives a set of alphabet rules from a dictionaryTrie. If a Trie is built from a
