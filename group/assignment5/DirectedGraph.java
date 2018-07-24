@@ -6,8 +6,6 @@
  *
  * @param <T>
  */
-
-
 public class DirectedGraph<T> {
     protected DirectedGraphNode<T> root;
 

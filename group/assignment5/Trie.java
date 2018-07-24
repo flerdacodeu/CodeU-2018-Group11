@@ -1,4 +1,3 @@
-import assignment5.TrieNode;
 
 /**
  * Implement a Trie which extends the more general Tree<Character> data structure. This implementation is
@@ -67,8 +66,8 @@ public class Trie extends DirectedGraph<Character>{
 
     /**
      * Checks whether a word is a prefix the Trie
-     * @param word String, word to be found
-     * @return true if the word is prefix of a dictionnary word, false otherwise
+     * @param prefix String, word to be found
+     * @return true if the word is prefix of a dictionary word, false otherwise
      */
     public boolean isPrefix(String prefix) {
         prefix = prefix.toLowerCase();
@@ -77,7 +76,7 @@ public class Trie extends DirectedGraph<Character>{
 
         TrieNode lastLetter = findLastLetter(prefix);
 
-        if (lastLetter == null)
+        if(lastLetter == null)
             return false;
         return true;
     }

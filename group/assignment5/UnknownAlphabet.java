@@ -41,13 +41,12 @@ public class UnknownAlphabet {
      * Finds a possible alphabet for the dictionnary used to initilise the UnknownAlphabet object.
      * It works by travesing the graph of rules rulesGraph. The traversal start from a parentless node and only
      * adds children to the alphabet if their parents have alrady been added the alphabet.
-     * @param dictionaryTrie
      *	Trie, a dictionary of words given as a Trie
      * @return alphabet,
      * 		a list of Characters reprensenting a valid alphabet for the dictionary
      */
     public ArrayList<Character> alphabet() {
-        ArrayList<Character> alphabet = new ArrayList<Character>();
+        ArrayList<Character> alphabet = new ArrayList<>();
 
         DirectedGraphNode<Character> current = rulesGraph.root;
 
@@ -73,26 +72,26 @@ public class UnknownAlphabet {
     /**
      * Builds a directed graph that is consistant with the set of rules; e.i. if a Character A
      * appears after a Charter B in a rule, then A is a child of B (and B is a parent of A)
-     * @parm rules
+     * @param rules
      * 		ArrayList<ArrayList<Character>>, list of rules that the alphabet must follow
      * @return rulesGraph DirectedGraph<Character> the directed graph of rules
      *
      **/
     private DirectedGraph<Character> buildRulesGraph(ArrayList<ArrayList<Character>> rules) {
-        DirectedGraph<Character> rulesTree = new DirectedGraph<Character>(new DirectedGraphNode<Character>(Trie.ROOT_SYMBOL));
+        DirectedGraph<Character> rulesTree = new DirectedGraph<>(new DirectedGraphNode<>(Trie.ROOT_SYMBOL));
 
         for (ArrayList<Character> rule : rules) {
             int ruleLength = rule.size();
             DirectedGraphNode<Character> current = rulesTree.find(rule.get(ruleLength-1));
             if (current == null) {
-                rulesTree.addChild(rulesTree.root, new DirectedGraphNode<Character>(rule.get(ruleLength-1)));
+                rulesTree.addChild(rulesTree.root, new DirectedGraphNode<>(rule.get(ruleLength-1)));
                 current = rulesTree.find(rule.get(ruleLength-1));
             }
 
             for(int i = ruleLength -2 ; i>=0 ; i--) {
                 DirectedGraphNode<Character> next = rulesTree.find(rule.get(i));
                 if (next == null) {
-                    rulesTree.addChild(current, new DirectedGraphNode<Character>(rule.get(i)));
+                    rulesTree.addChild(current, new DirectedGraphNode<>(rule.get(i)));
                     current = rulesTree.find(rule.get(i));
                 } else { // need to check if next is in the subtree starting from current
                     if (next.findNode(current.getKey()) != null)  // if next comes before current in the tree, the dictionnary is inconsistent!
@@ -119,7 +118,7 @@ public class UnknownAlphabet {
      * @return derivedRules, a list of rules
      */
     private ArrayList<ArrayList<Character>> deriveRules(Trie dictionaryTrie) {
-        ArrayList<ArrayList<Character>> derivedRules = new ArrayList<ArrayList<Character>>();
+        ArrayList<ArrayList<Character>> derivedRules = new ArrayList<>();
         DirectedGraphNode<Character> current = dictionaryTrie.root;
         derivedRules.add(current.getChildrensKeys());
 
@@ -142,7 +141,7 @@ public class UnknownAlphabet {
     }
 
     private ArrayList<Character> reverseArray(ArrayList<Character> array){
-        ArrayList<Character> reversed = new ArrayList<Character>(array.size());
+        ArrayList<Character> reversed = new ArrayList<>(array.size());
         for (int i = array.size() - 1; i>= 0; i--) {
             reversed.add(array.get(i));
         }
@@ -163,35 +162,35 @@ public class UnknownAlphabet {
 	    		 rules=changePosition(rules,start,i);
 	    	 }
 	     }
- }
+    }
  
-private ArrayList<ArrayList<Character>> changePosition(ArrayList<ArrayList<Character>> rules, int start, int i) {
-	ArrayList<Character> temp = rules.get(start);
-	rules.set(start, rules.get(i));
-	rules.set(i, temp);
+    private ArrayList<ArrayList<Character>> changePosition(ArrayList<ArrayList<Character>> rules, int start, int i) {
+        ArrayList<Character> temp = rules.get(start);
+	    rules.set(start, rules.get(i));
+	    rules.set(i, temp);
 	
-	return rules;
-}
+	    return rules;
+    }
 
-private ArrayList<ArrayList<Character>> removeDuplicate(ArrayList<ArrayList<Character>> rules){
-	ArrayList<ArrayList<Character>> newRules = new ArrayList<ArrayList<Character>>();
-	newRules.add(rules.get(0));
-	 for(int i=1;i<rules.size();i++){
-		 if(!newRules.contains(rules.get(i))){
-			 if(!isSubset(rules.get(i),newRules))
-			 newRules.add(rules.get(i));
-		 }
-	 }
-	 return newRules;
-}
+    private ArrayList<ArrayList<Character>> removeDuplicate(ArrayList<ArrayList<Character>> rules){
+	    ArrayList<ArrayList<Character>> newRules = new ArrayList<>();
+	    newRules.add(rules.get(0));
+	    for(int i=1;i<rules.size();i++){
+		    if(!newRules.contains(rules.get(i))){
+			    if(!isSubset(rules.get(i),newRules))
+			        newRules.add(rules.get(i));
+		        }
+	        }
+        return newRules;
+    }
 
-private boolean isSubset(ArrayList<Character> arrayList,ArrayList<ArrayList<Character>> newRules) {
-	for(char c: arrayList){
-		for(int i=0;i<newRules.size();i++){
-			if(newRules.get(i).contains(c))
-				return true;
-		}
-	}
-	return false;
-}
+    private boolean isSubset(ArrayList<Character> arrayList,ArrayList<ArrayList<Character>> newRules) {
+	    for(char c: arrayList){
+		    for(int i=0; i<newRules.size(); i++){
+			    if(newRules.get(i).contains(c))
+				    return true;
+		        }
+	        }
+	    return false;
+    }
 }

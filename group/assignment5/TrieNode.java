@@ -17,7 +17,6 @@ public class TrieNode extends DirectedGraphNode<Character> {
      * If the current node already contains a child with key childKey, then it will only
      * updates its isEndOfWord attribute accordingly.
      * @param childKey
-     * @param isEndOfWord
      * @return
      */
     public TrieNode addChild(Character childKey) {

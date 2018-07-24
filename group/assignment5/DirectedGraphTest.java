@@ -2,6 +2,9 @@ import org.junit.Test;
 import org.junit.Assert;
 import java.util.ArrayList;
 
+/**
+ * @author AycaMericCelik
+ */
 public class DirectedGraphTest {
     @Test (expected = IllegalArgumentException.class)
     public void findNodeWithNullArgumentShouldThrowException(){
@@ -145,13 +148,6 @@ public class DirectedGraphTest {
         Assert.assertEquals(root.findNode(node1.getKey()), node1);
         Assert.assertEquals(root.findNode(node2.getKey()), node2);
         Assert.assertNull(node1.findNode(node2.getKey()));
-    }
-
-    @Test
-    public void equalsTest(){
-        DirectedGraphNode<Character> node1 = new DirectedGraphNode<>('A');
-        DirectedGraphNode<Character> node2 = new DirectedGraphNode<>('A');
-        //Assert.assertEquals(node1, node2);
     }
 
     @Test

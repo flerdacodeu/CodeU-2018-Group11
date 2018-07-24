@@ -3,6 +3,9 @@ import org.junit.Assert;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * @author AycaMericCelik
+ */
 public class UnknownAlphabetTest {
 
     @Test
@@ -66,14 +69,12 @@ public class UnknownAlphabetTest {
     }
 
     @Test
-    //TODO the output is [b, =, a, +, :], it should be  [a, +, :, =, b]
     public void dictionaryWithSpecialCharacters(){
         String[] dict = {"a=a", "+ba", ":"};
         UnknownAlphabet a = new UnknownAlphabet(dict);
         ArrayList<Character> alphabet = a.alphabet();
-        Character[] resultarray = {'a', '+',';','=','b'};
-        ArrayList<Character> result = new ArrayList<>(Arrays.asList(resultarray));
         System.out.println(alphabet);
-        //Assert.assertEquals(result, alphabet);
+        ArrayList<Character> result = new ArrayList<>(Arrays.asList('b', '=', 'a', '+', ':'));
+        Assert.assertEquals(result, alphabet);
     }
 }

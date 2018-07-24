@@ -1,10 +1,13 @@
 import org.junit.Test;
 
+/**
+ * @author AycaMericCelik
+ */
 public class TrieTest {
     @Test (expected = IllegalArgumentException.class)
     public void addChildWithNullParameterShouldThrowException(){
-        TrieNode parent = new TrieNode('A',false);
-        parent.addChild(null,false);
+        TrieNode parent = new TrieNode('A');
+        parent.addChild(null);
     }
 
     @Test (expected = IllegalArgumentException.class)
