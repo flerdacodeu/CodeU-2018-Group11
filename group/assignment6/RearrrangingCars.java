@@ -67,5 +67,13 @@ public class RearrrangingCars {
 		}
 		return noExistKey;
 	}
+	
+	public Hashtable<Integer, Character> getStart() {
+		return start;
+	}
+
+	public Hashtable<Integer, Character> getEnd() {
+		return end;
+	}
 
 }
