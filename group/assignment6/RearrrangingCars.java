@@ -1,23 +1,26 @@
 package assignment_6;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+
+import assignment6.Sequence;
+
 import java.util.Random;
 
 public class RearrrangingCars {
 
-	private Hashtable<Integer, Character> start;
-	private Hashtable<Integer, Character> end;
+	private char[] startConfiguration;
+	private char[] endConfiguration;
 	private Random rand;
-	private int noCarKey = 0;
-	private int noExistKey = -1;
+	private final char noCarKey = '0';
 
-	public RearrrangingCars(Hashtable<Integer, Character> start,
-			Hashtable<Integer, Character> end) {
+	public RearrrangingCars(char[] start, char[] end) { // todo check validity of the inputs (same size, unique cars, etc)
 		rand = new Random();
-		this.start = start;
-		this.end = end;
+		this.startConfiguration = start;
+		this.endConfiguration = end;
 	}
 	
 	/**
@@ -34,38 +37,61 @@ public class RearrrangingCars {
 	 */
 	public LinkedList<Sequence> generateMoves() {
 		LinkedList<Sequence> moves = new LinkedList<>();
-		char emptySlot = start.get(noCarKey);
-		move(moves, noCarKey, emptySlot);
-		if (!start.equals(end)) {
-			int key = rand.nextInt(start.keySet().size() - 1) + 1;
-			char value = start.get(key);
-			moves.add(new Sequence(key, value, emptySlot));
-			start.replace(noCarKey, start.get(key));
-			start.replace(key, emptySlot);
-			move(moves, key, value);
+		int emptySlot = findSlot(startConfiguration, noCarKey);
+		move(moves, emptySlot);
+		
+		while (!Arrays.equals(startConfiguration, endConfiguration)) {
+			emptySlot = findSlot(startConfiguration, noCarKey);
+			int randomSlot = findRandomSlot(); 
+			char carToMove = startConfiguration[randomSlot];
+			moves.add(new Sequence(carToMove, randomSlot, emptySlot));
+			startConfiguration[randomSlot] = noCarKey;
+			startConfiguration[emptySlot] = carToMove;
+			move(moves, randomSlot);
 		}
 		return moves;
 	}
 
-	private void move(LinkedList<Sequence> moves, int emptyKey, char emptySlot) {
-		int key = findKey(end, emptySlot);
-		char value = start.get(key);
-		if (emptySlot == value) {
-			return;
-		}
-		moves.add(new Sequence(key, value, emptySlot));
-		start.replace(noCarKey, start.get(key));
-		start.replace(key, emptySlot);
-		move(moves, key, value);
+	private int findRandomSlot() {
+		int randomSlot = rand.nextInt(startConfiguration.length - 1) + 1;
+		
+		// check that the spot we select does 
+		// contain a car that is already at the right place
+		while(startConfiguration[randomSlot] == endConfiguration[randomSlot])
+			randomSlot = rand.nextInt(startConfiguration.length - 1) + 1;
+		
+		return randomSlot;
 	}
 
-	private int findKey(Hashtable<Integer, Character> end, Character value) {
-		for (Entry<Integer, Character> element : end.entrySet()) {
-			if (element.getValue().equals(value)) {
-				return element.getKey();
-			}
+	private void move(LinkedList<Sequence> moves, int currentEmptySlot) {
+		char carToMove = endConfiguration[currentEmptySlot]; // finds the car that should be in the currently empty slot
+		if (carToMove == noCarKey) { // if the current empty slot is also the final empty slot, don't do anything
+			return; 
 		}
-		return noExistKey;
+		int currentParkingSlot = findSlot(startConfiguration, carToMove);
+		moves.add(new Sequence(carToMove, currentParkingSlot, currentEmptySlot));
+		startConfiguration[currentParkingSlot] = noCarKey;
+		startConfiguration[currentEmptySlot] = carToMove;
+		currentEmptySlot = currentParkingSlot;
+		move(moves, currentEmptySlot);
+	}
+
+	
+	private int findSlot(char[] configuration, char carID) {
+		for(int i = 0; i<configuration.length; i++) {
+			if(configuration[i] == carID)
+				return i;
+		}
+		throw new IllegalArgumentException("The current configuration does not contain a car with ID "+ carID);
+	}
+	
+	
+	public ArrayList<LinkedList<Sequence>> generateAllSequences(){
+		// TODO
+		ArrayList<LinkedList<Sequence>> allSeqs = new ArrayList<LinkedList<Sequence>>();
+
+		
+		return allSeqs;
 	}
 	
 	public Hashtable<Integer, Character> getStart() {

@@ -3,25 +3,25 @@ package assignment_6;
 import assignment6.Sequence;
 
 public class Sequence {
-	private int car;
-	private char from;
-	private char to;
+	private char car;
+	private int from;
+	private int to;
 
-	public Sequence(int car, char from, char to) {
+	public Sequence(char car, int from, int to) {
 		this.car = car;
 		this.from = from;
 		this.to = to;
 	}
 
-	public int getCar() {
+	public char getCar() {
 		return car;
 	}
 
-	public char getFrom() {
+	public int getFrom() {
 		return from;
 	}
 
-	public char getTo() {
+	public int getTo() {
 		return to;
 	}
 	
