@@ -35,8 +35,8 @@ public class Move {
 		if (configuration[from] != car)
 			throw new IllegalArgumentException("Cannot complete move; the car ("+configuration[from]+") to be moved"
 					+ " is not the expected car("+car+").");
-		
-		configuration[from] = RearrangingCars.noCarKey;
+
+		configuration[from] = RearrrangingCars.noCarKey;
 		configuration[to] = car;
 	}
 	

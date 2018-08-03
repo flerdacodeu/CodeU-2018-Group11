@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 class RearrangingCarsTest {
@@ -119,6 +120,5 @@ class RearrangingCarsTest {
 		
 		assertEquals(0, allSequences.size());
 	}
-	
 
 }
