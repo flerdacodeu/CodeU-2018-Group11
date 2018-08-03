@@ -1,14 +1,12 @@
 package assignment_6;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 
 import assignment6.Sequence;
-
-import java.util.Random;
 
 public class RearrrangingCars {
 
@@ -17,58 +15,62 @@ public class RearrrangingCars {
 	private Random rand;
 	private final char noCarKey = '0';
 
-	public RearrrangingCars(char[] start, char[] end) { // todo check validity of the inputs (same size, unique cars, etc)
+	public RearrrangingCars(char[] start, char[] end) { 
+		if (start.length != end.length)
+			throw new IllegalArgumentException("Starting and ending configurations must be of the same size.");
+		if (hasDuplicates(start) || hasDuplicates(end))
+			throw new IllegalArgumentException("Car IDs must be unique, configurations cannot contain duplicates.");
+		
 		rand = new Random();
 		this.startConfiguration = start;
 		this.endConfiguration = end;
 	}
 	
+	private boolean hasDuplicates(char[] configuration){
+	  Set<Character> set = new HashSet<Character>();
+	  for (char car : configuration) {
+	    if (set.contains(car)) 
+	    	return true;
+	    set.add(car);
+	  }
+	  return false;
+	}
+
 	/**
-	 * given an starting and ending state of parking
-	 * start with the parking emptySlot in start state,
-	 * get the car that will exist at the same slot in the end state 
-	 * and do a move by swap the car from its current slot to the emptySlot
-	 * repeat that until reaching emptySlots
-	 * finally check if the start state equal the end,
-	 * if not it will be the case that at the beginning the emptySlot at the same position in two states
-	 * in this case generate in the first move a random slot to swap it with the empty 
-	 * and then starting the algorithm
-	 * @return linkedList of sequences to define moves as car, starting and ending spaces
+	 * given an starting and ending state of parking start with the parking
+	 * emptySlot in start state, get the car that will exist at the same slot in
+	 * the end state and do a move by swap the car from its current slot to the
+	 * emptySlot repeat that until reaching emptySlots and meanwhile check if the
+	 * start state equal the end before ending the moves, if not it will be the case that at the
+	 * beginning the emptySlot at the same position in two states in this case
+	 * generate in the first move a random slot to swap it with the empty and
+	 * then starting the algorithm
+	 * 
+	 * @return linkedList of sequences to define moves as car, starting and
+	 *         ending spaces
 	 */
 	public LinkedList<Sequence> generateMoves() {
 		LinkedList<Sequence> moves = new LinkedList<>();
-		int emptySlot = findSlot(startConfiguration, noCarKey);
+		int emptySlot = findCarSlot(startConfiguration, noCarKey);
 		move(moves, emptySlot);
-		
-		while (!Arrays.equals(startConfiguration, endConfiguration)) {
-			emptySlot = findSlot(startConfiguration, noCarKey);
-			int randomSlot = findRandomSlot(); 
-			char carToMove = startConfiguration[randomSlot];
-			moves.add(new Sequence(carToMove, randomSlot, emptySlot));
-			startConfiguration[randomSlot] = noCarKey;
-			startConfiguration[emptySlot] = carToMove;
-			move(moves, randomSlot);
-		}
 		return moves;
 	}
-
-	private int findRandomSlot() {
-		int randomSlot = rand.nextInt(startConfiguration.length - 1) + 1;
-		
-		// check that the spot we select does 
-		// contain a car that is already at the right place
-		while(startConfiguration[randomSlot] == endConfiguration[randomSlot])
-			randomSlot = rand.nextInt(startConfiguration.length - 1) + 1;
-		
-		return randomSlot;
-	}
-
+	
 	private void move(LinkedList<Sequence> moves, int currentEmptySlot) {
-		char carToMove = endConfiguration[currentEmptySlot]; // finds the car that should be in the currently empty slot
-		if (carToMove == noCarKey) { // if the current empty slot is also the final empty slot, don't do anything
+		char carToMove = endConfiguration[currentEmptySlot]; 
+		
+		// it the current configuration and the end configuration have the same empty slot 
+		// but are not overall equal, we select a random misplaced car to move
+		if(carToMove == noCarKey && !Arrays.equals(startConfiguration, endConfiguration)) {
+			int randomSlot = findRandomSlot(); 
+			carToMove = startConfiguration[randomSlot];
+		}
+		 
+		if (carToMove == noCarKey) { 
 			return; 
 		}
-		int currentParkingSlot = findSlot(startConfiguration, carToMove);
+		
+		int currentParkingSlot = findCarSlot(startConfiguration, carToMove);
 		moves.add(new Sequence(carToMove, currentParkingSlot, currentEmptySlot));
 		startConfiguration[currentParkingSlot] = noCarKey;
 		startConfiguration[currentEmptySlot] = carToMove;
@@ -76,8 +78,7 @@ public class RearrrangingCars {
 		move(moves, currentEmptySlot);
 	}
 
-	
-	private int findSlot(char[] configuration, char carID) {
+	private int findCarSlot(char[] configuration, char carID) {
 		for(int i = 0; i<configuration.length; i++) {
 			if(configuration[i] == carID)
 				return i;
@@ -85,21 +86,19 @@ public class RearrrangingCars {
 		throw new IllegalArgumentException("The current configuration does not contain a car with ID "+ carID);
 	}
 	
-	
-	public ArrayList<LinkedList<Sequence>> generateAllSequences(){
-		// TODO
-		ArrayList<LinkedList<Sequence>> allSeqs = new ArrayList<LinkedList<Sequence>>();
-
-		
-		return allSeqs;
-	}
-	
-	public Hashtable<Integer, Character> getStart() {
-		return start;
+	private int findRandomSlot() {
+		int randomSlot = rand.nextInt(startConfiguration.length - 1) + 1;
+		while(startConfiguration[randomSlot] == endConfiguration[randomSlot])
+			randomSlot = rand.nextInt(startConfiguration.length - 1) + 1;
+		return randomSlot;
 	}
 
-	public Hashtable<Integer, Character> getEnd() {
-		return end;
+	public char[] getStart() {
+		return startConfiguration;
+	}
+
+	public char[] getEnd() {
+		return endConfiguration;
 	}
 
 }

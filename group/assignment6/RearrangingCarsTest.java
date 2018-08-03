@@ -2,10 +2,12 @@ package assignment_6;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Hashtable;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import org.junit.jupiter.api.Test;
+
+import assignment6.Sequence;
 
 class RearrangingCarsTest {
 
@@ -15,13 +17,14 @@ class RearrangingCarsTest {
 		char[] end = {'3','1','2','0'};
 		
 		RearrrangingCars recar = new RearrrangingCars(start, end);
+		LinkedList<Sequence> sequences = recar.generateMoves();
 		
 		LinkedList<Sequence> expected = new LinkedList<Sequence>();
 		expected.add(new Sequence('2', 1, 2));
 		expected.add(new Sequence('1', 0, 1));
 		expected.add(new Sequence('3', 3, 0));
-		
-		assertEquals(expected, recar.generateMoves());
+	
+		assertEquals(expected, sequences);
 	}
 	
 	@Test
@@ -64,4 +67,7 @@ class RearrangingCarsTest {
 		
 		assertTrue(Arrays.equals(end, recar.getStart()));
 	}
+	
+	
+
 }

@@ -1,7 +1,5 @@
 package assignment_6;
 
-import assignment6.Sequence;
-
 public class Sequence {
 	private char car;
 	private int from;
