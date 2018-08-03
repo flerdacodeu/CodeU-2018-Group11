@@ -2,116 +2,123 @@ package assignment_6;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 class RearrangingCarsTest {
 
 	@Test
+	void testDifferentSizeInput() {
+		char[] start = {'1','2','0'};
+		char[] end = {'3','1','2','0'};
+		Assertions.assertThrows(IllegalArgumentException.class, () -> new RearrangingCars(start, end));	
+	}
+	
+	@Test
+	void testDuplicatesInInput(){
+		char[] start = {'1','1','0'};
+		char[] end = {'2','1','0'};
+		Assertions.assertThrows(IllegalArgumentException.class, () -> new RearrangingCars(start, end));	
+	}
+	
+	@Test
+	void testInputsContainDifferentCars(){
+		char[] start = {'1','3','0'};
+		char[] end = {'2','1','0'};
+		Assertions.assertThrows(IllegalArgumentException.class, () -> new RearrangingCars(start, end));	
+	}
+	
+	@Test
+	void testNoEmptySlotInInput(){
+		char[] start = {'1','2','3'};
+		char[] end = {'3','1','2'};
+		Assertions.assertThrows(IllegalArgumentException.class, () -> new RearrangingCars(start, end));	
+	}
+	
+	@Test
 	void testExampleArrangements() {
-		Hashtable<Integer, Character> start = new Hashtable<>();
-		start.put(1, 'a');
-		start.put(2, 'b');
-		start.put(3, 'd');
-		start.put(0, 'c');
-		Hashtable<Integer, Character> end = new Hashtable<>();
-		end.put(1, 'b');
-		end.put(2, 'c');
-		end.put(3, 'a');
-		end.put(0, 'd');
-		RearrrangingCars recar = new RearrrangingCars(start, end);
+		char[] start = {'1','2','0','3'};
+		char[] end = {'3','1','2','0'};
 		
-		LinkedList<Sequence> expected = new LinkedList<Sequence>();
-		expected.add(new Sequence(2, 'b', 'c'));
-		expected.add(new Sequence(1, 'a', 'b'));
-		expected.add(new Sequence(3, 'd', 'a'));
+		RearrangingCars recar = new RearrangingCars(start, end);
+		LinkedList<Move> sequences = recar.generateMoves();
 		
-		assertEquals(expected, recar.generateMoves());
+		LinkedList<Move> expected = new LinkedList<Move>();
+		expected.add(new Move('2', 1, 2));
+		expected.add(new Move('1', 0, 1));
+		expected.add(new Move('3', 3, 0));
+	
+		assertEquals(expected, sequences);
 	}
 	
 	@Test
 	void testStartEqualsEnd() {
-		Hashtable<Integer, Character> start = new Hashtable<>();
-		start.put(1, 'a');
-		start.put(2, 'b');
-		start.put(3, 'd');
-		start.put(0, 'c');
-		Hashtable<Integer, Character> end = new Hashtable<>();
-		end.put(1, 'a');
-		end.put(2, 'b');
-		end.put(3, 'd');
-		end.put(0, 'd');
-		RearrrangingCars recar = new RearrrangingCars(start, end);
+		char[] start = {'1','2','0','3'};
+		char[] end = {'1','2','0','3'};
+		RearrangingCars recar = new RearrangingCars(start, end);
 		
 		
 		assertTrue(recar.generateMoves().isEmpty());
-		//TODO: catches a NullPointerException!
 	}
 	
 	@Test
 	void testSameEmptySpot() {
-		Hashtable<Integer, Character> start = new Hashtable<>();
-		start.put(1, 'a');
-		start.put(2, 'b');
-		start.put(3, 'd');
-		start.put(0, 'c');
-		Hashtable<Integer, Character> end = new Hashtable<>();
-		end.put(1, 'b');
-		end.put(2, 'd');
-		end.put(3, 'a');
-		end.put(0, 'c');
-		RearrrangingCars recar = new RearrrangingCars(start, end);
+		char[] start = {'1','2','0','3'};
+		char[] end = {'3','1','0','2'};
+		RearrangingCars recar = new RearrangingCars(start, end);
 		recar.generateMoves();
 		
-		assertEquals(end, recar.getStart());
+		assertTrue(Arrays.equals(end, recar.getCurrentConfiguration()));
 		
 	}
 	
 	@Test
 	void testDifficultRearrangement() {
-		Hashtable<Integer, Character> start = new Hashtable<>();
-		start.put(1, 'a');
-		start.put(2, 'b');
-		start.put(3, 'c');
-		start.put(0, 'd');
-		start.put(4, 'e');
-		Hashtable<Integer, Character> end = new Hashtable<>();
-		end.put(2, 'a');
-		end.put(1, 'b');
-		end.put(3, 'c');
-		end.put(4, 'd');
-		end.put(0, 'e');
-		RearrrangingCars recar = new RearrrangingCars(start, end);
+		char[] start = {'1','2','3','0','4'};
+		char[] end = {'2','1','3','4','0'};
+		RearrangingCars recar = new RearrangingCars(start, end);
 		recar.generateMoves();
 		
-		assertEquals(end, recar.getStart());
-		//TODO: fails
+		assertTrue(Arrays.equals(end, recar.getCurrentConfiguration()));
 	}
 	
 	@Test
 	void testDifficultRearrangement2() {
-		Hashtable<Integer, Character> start = new Hashtable<>();
-		start.put(1, 'a');
-		start.put(2, 'b');
-		start.put(3, 'c');
-		start.put(4, 'd');
-		start.put(5, 'e');
-		start.put(0, 'f');
-		
-		Hashtable<Integer, Character> end = new Hashtable<>();
-		end.put(2, 'a');
-		end.put(1, 'b');
-		end.put(4, 'c');
-		end.put(3, 'd');
-		end.put(0, 'e');
-		end.put(5, 'f');
-		
-		RearrrangingCars recar = new RearrrangingCars(start, end);
+		char[] start = {'1','2','3','4','5', '0'};
+		char[] end = {'2','1','4','3','0','5'};
+		RearrangingCars recar = new RearrangingCars(start, end);
 		recar.generateMoves();
 		
-		assertEquals(end, recar.getStart());
-		//TODO: fails
+		assertTrue(Arrays.equals(end, recar.getCurrentConfiguration()));
 	}
+
+	@Test
+	void testGenerateAllSequences() {
+		char[] start = {'1','2','0'};
+		char[] end = {'2','0','1'};
+		RearrangingCars recar = new RearrangingCars(start, end);
+		ArrayList<LinkedList<Move>> allSequences = recar.generateAllSequences();
+		assertEquals(2, allSequences.size());
+		for(LinkedList<Move> sequences : allSequences) {
+			char[] initial = start.clone();
+			for(Move move: sequences) {
+				move.apply(initial);
+			}
+			assertTrue(Arrays.equals(end, initial));
+		}
+	}
+	
+	@Test
+	void testGenerateAllSequencesWhenStartEqualsEnd() {
+		char[] start = {'1','2','0', '3'};
+		char[] end = {'1','2','0', '3'};
+		RearrangingCars recar = new RearrangingCars(start, end);
+		ArrayList<LinkedList<Move>> allSequences = recar.generateAllSequences();
+		
+		assertEquals(0, allSequences.size());
+	}
+	
+
 }
