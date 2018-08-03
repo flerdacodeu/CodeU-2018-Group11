@@ -1,23 +1,41 @@
 package assignment_6;
 
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
+
+import assignment6.Sequence;
 
 public class RearrrangingCars {
 
-	private Hashtable<Integer, Character> start;
-	private Hashtable<Integer, Character> end;
-	private HashSet<Integer> carsInRightSlots;
-	private final int noCarKey = 0;
+	private char[] startConfiguration;
+	private char[] endConfiguration;
+	private Random rand;
+	private final char noCarKey = '0';
 
-	public RearrrangingCars(Hashtable<Integer, Character> start,
-			Hashtable<Integer, Character> end) {
-		carsInRightSlots = new HashSet<>();
-		this.start = start;
-		this.end = end;
+	public RearrrangingCars(char[] start, char[] end) { 
+		if (start.length != end.length)
+			throw new IllegalArgumentException("Starting and ending configurations must be of the same size.");
+		if (hasDuplicates(start) || hasDuplicates(end))
+			throw new IllegalArgumentException("Car IDs must be unique, configurations cannot contain duplicates.");
+		
+		rand = new Random();
+		this.startConfiguration = start;
+		this.endConfiguration = end;
 	}
+	
+	private boolean hasDuplicates(char[] configuration){
+	  Set<Character> set = new HashSet<Character>();
+	  for (char car : configuration) {
+	    if (set.contains(car)) 
+	    	return true;
+	    set.add(car);
+	  }
+	  return false;
+	}
+
 
 	/**
 	 * given an starting and ending state of parking start with the parking
@@ -34,52 +52,54 @@ public class RearrrangingCars {
 	 */
 	public LinkedList<Sequence> generateMoves() {
 		LinkedList<Sequence> moves = new LinkedList<>();
-		char emptySlot = start.get(noCarKey);
-		move(moves, noCarKey, emptySlot);
+		int emptySlot = findCarSlot(startConfiguration, noCarKey);
+		move(moves, emptySlot);
 		return moves;
 	}
-
-	private void move(LinkedList<Sequence> moves, int emptyKey, char emptySlot) {
-		int carID = findCarID(end, emptySlot);
-		if (carID == 0 && !start.equals(end)) {
-			carID = generateRandomCarID();
-		} else {
-			carsInRightSlots.add(carID);
+	
+	private void move(LinkedList<Sequence> moves, int currentEmptySlot) {
+		char carToMove = endConfiguration[currentEmptySlot]; 
+		
+		// it the current configuration and the end configuration have the same empty slot 
+		// but are not overall equal, we select a random misplaced car to move
+		if(carToMove == noCarKey && !Arrays.equals(startConfiguration, endConfiguration)) {
+			int randomSlot = findRandomSlot(); 
+			carToMove = startConfiguration[randomSlot];
 		}
-		char parkingSlot = start.get(carID);
-		if (emptySlot == parkingSlot) {
-			return;
+		 
+		if (carToMove == noCarKey) { 
+			return; 
 		}
-		moves.add(new Sequence(carID, parkingSlot, emptySlot));
-		start.replace(noCarKey, start.get(carID));
-		start.replace(carID, emptySlot);
-		move(moves, carID, parkingSlot);
+		
+		int currentParkingSlot = findCarSlot(startConfiguration, carToMove);
+		moves.add(new Sequence(carToMove, currentParkingSlot, currentEmptySlot));
+		startConfiguration[currentParkingSlot] = noCarKey;
+		startConfiguration[currentEmptySlot] = carToMove;
+		currentEmptySlot = currentParkingSlot;
+		move(moves, currentEmptySlot);
 	}
 
-	private int findCarID(Hashtable<Integer, Character> configuration,
-			Character parkingSlot) {
-		for (Entry<Integer, Character> element : configuration.entrySet()) {
-			if (element.getValue().equals(parkingSlot)) {
-				return element.getKey();
-			}
-		}
-		throw new Error("That input is not correct, Missing car or slot");
-	}
-
-	private int generateRandomCarID() {
-		for (int i = 1; i < start.size(); i++) {
-			if (!carsInRightSlots.contains(i))
+	private int findCarSlot(char[] configuration, char carID) {
+		for(int i = 0; i<configuration.length; i++) {
+			if(configuration[i] == carID)
 				return i;
 		}
-		return noCarKey;
+		throw new IllegalArgumentException("The current configuration does not contain a car with ID "+ carID);
+	}
+	
+	private int findRandomSlot() {
+		int randomSlot = rand.nextInt(startConfiguration.length - 1) + 1;
+		while(startConfiguration[randomSlot] == endConfiguration[randomSlot])
+			randomSlot = rand.nextInt(startConfiguration.length - 1) + 1;
+		return randomSlot;
 	}
 
-	public Hashtable<Integer, Character> getStart() {
-		return start;
+	public char[] getStart() {
+		return startConfiguration;
 	}
 
-	public Hashtable<Integer, Character> getEnd() {
-		return end;
+	public char[] getEnd() {
+		return endConfiguration;
 	}
 
 }

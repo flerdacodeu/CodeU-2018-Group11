@@ -1,24 +1,22 @@
 package assignment_6;
 
-import java.util.Hashtable;
+import java.util.LinkedList;
+
+import assignment6.RearrrangingCars;
+import assignment6.Sequence;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Hashtable<Integer, Character> start = new Hashtable<>();
-		start.put(1, 'a');
-		start.put(2, 'b');
-		start.put(3, 'd');
-		start.put(0, 'c');
-		Hashtable<Integer, Character> end = new Hashtable<>();
-		end.put(1, 'b');
-		end.put(2, 'c');
-		end.put(3, 'a');
-		end.put(0, 'd');
+		char[] start = {'1','2','0','3'};
+		char[] end = {'3','1','2','0'};
+
 		RearrrangingCars recar = new RearrrangingCars(start, end);
-		for (Sequence s : recar.generateMoves())
+		
+		LinkedList<Sequence> sequences = recar.generateMoves();
+		for (Sequence s : sequences)
 			System.out.println("move car " + s.getCar() + " from "
-					+ s.getFrom() + " to " + s.getTo());
+					+ s.getFrom() + " to " + s.getTo() );
 
 	}
 
